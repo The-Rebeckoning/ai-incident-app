@@ -42,7 +42,9 @@ h1, h2, h3 {
 .hero-shell {
     padding: 2.4rem 2.6rem;
     border-radius: 28px;
-    background: linear-gradient(145deg, rgba(20, 20, 20, 0.98), rgba(52, 52, 52, 0.96));
+    background:
+        radial-gradient(circle at top left, rgba(255, 255, 255, 0.08), transparent 28%),
+        linear-gradient(135deg, rgba(22, 22, 22, 0.98), rgba(58, 58, 58, 0.96) 55%, rgba(84, 84, 84, 0.94));
     color: var(--hero-text);
     box-shadow: 0 20px 42px rgba(0, 0, 0, 0.14);
     border: 1px solid rgba(255, 255, 255, 0.06);
@@ -164,6 +166,60 @@ h1, h2, h3 {
     color: var(--text-soft);
     line-height: 1.55;
 }
+.case-study-shell {
+    margin-top: 0.85rem;
+    padding: 1rem 1.05rem 1rem;
+    border-radius: 22px;
+    background:
+        linear-gradient(180deg, rgba(252, 252, 252, 0.96), rgba(242, 242, 242, 0.94));
+    border: 1px solid rgba(120, 120, 120, 0.12);
+}
+.case-study-chip {
+    display: inline-block;
+    margin-bottom: 0.85rem;
+    padding: 0.35rem 0.7rem;
+    border-radius: 999px;
+    background: rgba(184, 92, 107, 0.12);
+    color: var(--accent);
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+.case-study-headline {
+    font-size: 1.15rem;
+    line-height: 1.35;
+    color: var(--text-strong);
+    font-weight: 700;
+    margin-bottom: 0.7rem;
+}
+.case-study-body {
+    font-size: 1rem;
+    line-height: 1.7;
+    color: #2b2b2b;
+    white-space: pre-wrap;
+}
+.case-study-relevance {
+    margin-top: 1rem;
+}
+.case-study-source {
+    margin-top: 0.9rem;
+    padding-top: 0.8rem;
+    border-top: 1px solid rgba(120, 120, 120, 0.12);
+    font-size: 0.92rem;
+}
+.case-study-source-label {
+    color: #6a6a6a;
+    margin-bottom: 0.35rem;
+}
+.case-study-source a {
+    color: var(--accent);
+    font-weight: 700;
+    text-decoration: none;
+}
+.case-study-source a:hover {
+    text-decoration: underline;
+}
 .chart-shell {
     background: transparent;
     border-radius: 22px;
@@ -184,6 +240,17 @@ div[data-testid="stRadio"] label,
 div[data-testid="stCheckbox"] label,
 div[data-testid="stSelectbox"] label {
     color: #4b4b4b;
+}
+.stButton > button {
+    font-size: 0.88rem !important;
+    white-space: nowrap !important;
+}
+.stButton > button:disabled {
+    background: rgba(232, 232, 232, 0.9) !important;
+    color: #8a8a8a !important;
+    border: 1px solid rgba(170, 170, 170, 0.28) !important;
+    cursor: not-allowed !important;
+    opacity: 1 !important;
 }
 .explore-bottom-radio div[data-testid="stRadio"] > div {
     background: rgba(245, 245, 245, 0.92) !important;

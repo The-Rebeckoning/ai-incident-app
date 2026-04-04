@@ -1,4 +1,5 @@
 import os
+from html import escape
 from pathlib import Path
 
 import pandas as pd
@@ -30,7 +31,19 @@ stakeholder_df = stakeholder_time_series_df.copy()
 industry_df = industry_long_df.copy()
 industry_monthly_df = industries_df.copy()
 industry_monthly_df = industry_monthly_df.rename(
-    columns={"Arts & entertainment &": "Arts & entertainment & recreation"}
+    columns={
+        "Government & security & defence": "Government, security, and defence",
+        "Government / security / defence": "Government, security, and defence",
+        "Media & social platforms & marketing": "Media, social platforms, and marketing",
+        "Media / social platforms / marketing": "Media, social platforms, and marketing",
+        "Robots & sensors & IT hardware": "Robots, sensors, and IT hardware",
+        "Robots / sensors / IT hardware": "Robots, sensors, and IT hardware",
+        "Healthcare & drugs & biotechnology": "Healthcare, drugs, and biotechnology",
+        "Healthcare / drugs / biotechnology": "Healthcare, drugs, and biotechnology",
+        "Arts & entertainment &": "Arts, entertainment, and recreation",
+        "Arts & entertainment & recreation": "Arts, entertainment, and recreation",
+        "Arts / entertainment / recreation": "Arts, entertainment, and recreation",
+    }
 )
 industry_monthly_df["Date"] = pd.to_datetime(
     industry_monthly_df["Date"], format="%Y-%m", errors="coerce"
@@ -66,6 +79,7 @@ YEAR_FILTER_OPTIONS = {
     "2023-2025": (2023, 2025),
 }
 STORY_GRADIENT = "linear-gradient(135deg, rgba(248,248,248,0.98), rgba(236,236,236,0.98))"
+CASE_STUDY_CACHE_VERSION = 4
 
 
 def inject_page_styles() -> None:
@@ -102,10 +116,15 @@ def style_chart(fig: go.Figure, height: int = 420) -> go.Figure:
 
 
 @st.cache_data(show_spinner=False)
-def load_case_study(stakeholder: str) -> dict[str, str]:
+def load_case_study(
+    stakeholder: str,
+    case_index: int = 0,
+    cache_version: int = CASE_STUDY_CACHE_VERSION,
+) -> dict[str, str]:
     """Load one AI case study summary for the selected stakeholder."""
     api_key = st.secrets.get("OPENAI_API_KEY") or os.environ.get("OPENAI_API_KEY")
-    return get_article_component_data(stakeholder, api_key=api_key)
+    _ = cache_version
+    return get_article_component_data(stakeholder, case_index=case_index, api_key=api_key)
 
 
 @st.cache_data(show_spinner=False)
@@ -192,8 +211,12 @@ def build_story_metrics() -> dict[str, str]:
         & ~harm_df["Harm Type"].isin(["Environmental", "Other"])
     ].copy()
     story_industry_df = industry_df[industry_df["Year"].between(2020, 2025)].copy()
+    story_incidents_df = incidents_over_time_df[
+        incidents_over_time_df["Date"].dt.year.between(2020, 2025)
+    ].copy()
+    story_incidents_df["Year"] = story_incidents_df["Date"].dt.year
 
-    total_cases = int(story_stakeholder_df.groupby("Year")["Count"].sum().sum())
+    total_incidents = int(story_incidents_df["Total Incidents & Hazards"].sum())
 
     stakeholder_totals = (
         in_depth_stakeholder_df.groupby("Stakeholder", as_index=False)["Count"].sum()
@@ -214,14 +237,22 @@ def build_story_metrics() -> dict[str, str]:
     top_harm = harm_totals.iloc[0]
 
     yearly_totals = (
-        story_stakeholder_df.groupby("Year", as_index=False)["Count"].sum().sort_values("Year")
+        story_incidents_df.groupby("Year", as_index=False)["Total Incidents & Hazards"]
+        .sum()
+        .sort_values("Year")
     )
     first_year = yearly_totals.iloc[0]
     last_year = yearly_totals.iloc[-1]
-    growth_pct = ((last_year["Count"] - first_year["Count"]) / first_year["Count"]) * 100
+    growth_pct = (
+        (
+            last_year["Total Incidents & Hazards"]
+            - first_year["Total Incidents & Hazards"]
+        )
+        / first_year["Total Incidents & Hazards"]
+    ) * 100
 
     return {
-        "total_cases": f"{total_cases:,}",
+        "total_incidents": f"{total_incidents:,}",
         "top_stakeholder": top_stakeholder["Stakeholder"],
         "top_stakeholder_count": f"{int(top_stakeholder['Count']):,}",
         "top_industry": top_industry["Industry"],
@@ -315,8 +346,8 @@ def build_story_figures() -> tuple[go.Figure, go.Figure, go.Figure]:
 def build_story_stakeholder_note() -> str:
     """Return the overview note for included and excluded stakeholder groups."""
     return (
-        "Additional stakeholder groups include Women (438, 4.6% of cases), "
-        "Civil society (408, 4.3% of cases), and Trade unions (11, 0.1% of cases)."
+        "Other stakeholder groups included in this dataset are Women with 438 cases (4.6%), "
+        "Civil society with 408 cases (4.3%), and Trade unions with 11 cases (0.1%)."
     )
 
 
@@ -428,9 +459,10 @@ def build_fastest_growing_industry_summary(
             ytd_row = ytd_growth_df.iloc[ytd_growth_df["Growth"].argmax()]
             month_label = latest_2026_date.strftime("%B")
             summary += (
-                f" As compared to January and {month_label} in 2025, in 2026, "
+                "<br><br>"
+                f"As compared to January and {month_label} in 2025, "
                 f"{ytd_row['Industry']} rose from {int(ytd_row[2025]):,} cases "
-                f"to {int(ytd_row[2026]):,} in the same timeframe."
+                f"to {int(ytd_row[2026]):,} in the first two months of 2026."
             )
             if ytd_row["Industry"] != growth_row["Industry"]:
                 summary += (
@@ -446,19 +478,25 @@ def build_stakeholder_peak_summary(
     selected_stakeholder: str,
     include_2026: bool,
 ) -> str:
-    """Return the peak year summary for the stakeholder chart."""
+    """Return the peak year summary for incidents and hazards."""
     if filtered_stakeholder_df.empty:
-        return "No stakeholder data is available for the selected view."
+        return "No incidents and hazards data is available for the selected view."
 
+    year_min = int(filtered_stakeholder_df["Year"].min())
+    year_max = int(filtered_stakeholder_df["Year"].max())
     yearly_totals = (
-        filtered_stakeholder_df.groupby("Year", as_index=False)["Count"].sum()
-        if selected_stakeholder == "All stakeholders"
-        else filtered_stakeholder_df[["Year", "Count"]].copy()
+        incidents_over_time_df[
+            incidents_over_time_df["Date"].dt.year.between(year_min, year_max)
+        ]
+        .assign(Year=lambda df: df["Date"].dt.year)
+        .groupby("Year", as_index=False)["Total Incidents & Hazards"]
+        .sum()
+        .rename(columns={"Total Incidents & Hazards": "Count"})
     )
     yearly_totals = yearly_totals.sort_values("Year").reset_index(drop=True)
     peak_row = yearly_totals.iloc[yearly_totals["Count"].idxmax()]
     summary = (
-        f"{int(peak_row['Year'])} experienced the highest number of total reported AI cases "
+        f"{int(peak_row['Year'])} experienced the highest number of incidents and hazards "
         f"({int(peak_row['Count']):,})."
     )
 
@@ -472,12 +510,14 @@ def build_stakeholder_peak_summary(
             prior_peak_row = prior_year_totals.iloc[prior_year_totals["Count"].idxmax()]
             if projected_2026 > float(prior_peak_row["Count"]):
                 summary += (
-                    f" If the remaining months in 2026 continue at the same pace, "
-                    f"2026 would become the peak year at about {projected_2026:,.0f} cases."
+                    "<br><br>"
+                    f"If the remaining months in 2026 continue at the same pace, "
+                    f"2026 will become the peak year at about {projected_2026:,.0f} cases."
                 )
             else:
                 summary += (
-                    f" If the remaining months in 2026 continue at the same pace, "
+                    "<br><br>"
+                    f"If the remaining months in 2026 continue at the same pace, "
                     f"2026 would still remain below the current peak of {int(prior_peak_row['Year'])}."
                 )
 
@@ -641,19 +681,36 @@ def build_explore_stakeholder_figure(
     return style_chart(line_fig, height=390)
 
 
-def load_case_study_content(selected_stakeholder: str) -> tuple[str, str]:
-    """Return case-study summary text and source URL for the Explore tab."""
+def load_case_study_content(selected_stakeholder: str, case_index: int) -> tuple[str, str, str, str, str, bool]:
+    """Return case-study title, summary, relevance, source URL, source label, and preloaded flag."""
     try:
         if selected_stakeholder == "All stakeholders":
             return (
+                "",
                 "Choose one stakeholder to load a matching case summary from the OECD incident feed.",
                 "",
+                "",
+                "",
+                False,
             )
         with st.spinner("Loading AI case study..."):
-            case_study_data = load_case_study(selected_stakeholder)
-        return case_study_data["summary"], case_study_data["source_url"]
+            case_study_data = load_case_study(selected_stakeholder, case_index=case_index)
+        source_label = (
+            "View OECD article"
+            if case_study_data.get("source_list_url")
+            and case_study_data["source_url"] != case_study_data["source_list_url"]
+            else "View OECD source list"
+        )
+        return (
+            case_study_data.get("title", ""),
+            case_study_data.get("summary", ""),
+            case_study_data.get("relevance", ""),
+            case_study_data["source_url"],
+            source_label,
+            bool(case_study_data.get("is_preloaded")),
+        )
     except Exception as exc:
-        return f"Unable to load AI case study: {exc}", ""
+        return "", f"Unable to load AI case study: {exc}", "", "", "", False
 
 
 def render_explore_summary_row(
@@ -666,7 +723,7 @@ def render_explore_summary_row(
     summary_col1, summary_col2 = st.columns([0.9, 1.1], gap="large")
     with summary_col1:
         insight_card(
-            "Peak year total cases",
+            "Peak year incidents and hazards",
             build_stakeholder_peak_summary(
                 stakeholder_high_level_df,
                 "All stakeholders",
@@ -696,17 +753,29 @@ def render_explore_chart_row(
         st.markdown('<div class="section-card">', unsafe_allow_html=True)
         st.plotly_chart(line_fig, use_container_width=True)
         st.markdown("</div>", unsafe_allow_html=True)
-        st.selectbox(
-            "Filter by specific stakeholder",
-            options=stakeholder_options,
-            index=(
-                stakeholder_options.index(selected_stakeholder)
-                if selected_stakeholder in stakeholder_options
-                else None
-            ),
-            placeholder="",
-            key="explore_selected_stakeholder",
-        )
+        filter_select_col, filter_clear_col = st.columns([0.8, 0.2], gap="small")
+        with filter_select_col:
+            st.selectbox(
+                "Filter by specific stakeholder",
+                options=stakeholder_options,
+                index=(
+                    stakeholder_options.index(selected_stakeholder)
+                    if selected_stakeholder in stakeholder_options
+                    else None
+                ),
+                placeholder="",
+                key="explore_selected_stakeholder",
+            )
+        with filter_clear_col:
+            st.markdown("<div style='height: 1.9rem;'></div>", unsafe_allow_html=True)
+            st.button(
+                "Clear",
+                key="clear_stakeholder_filter",
+                help="Clear stakeholder filter",
+                type="secondary",
+                use_container_width=True,
+                on_click=clear_explore_stakeholder_filter,
+            )
     with chart_row_col2:
         st.markdown('<div class="section-card">', unsafe_allow_html=True)
         st.plotly_chart(industry_fig, use_container_width=True)
@@ -715,8 +784,13 @@ def render_explore_chart_row(
 
 def render_explore_case_study(
     selected_stakeholder: str,
-    case_study_text: str,
+    case_study_title_text: str,
+    case_study_summary: str,
+    case_study_relevance: str,
     source_url: str,
+    source_label: str,
+    case_requested: bool,
+    is_cached_case: bool,
 ) -> None:
     """Render the Explore-tab AI case-study section."""
     st.markdown('<div class="section-card">', unsafe_allow_html=True)
@@ -730,14 +804,46 @@ def render_explore_case_study(
         case_study_title,
         "Use the filter above to learn about specific AI harm concerning that stakeholder.",
     )
-    st.text_area(
-        "Example case",
-        value=case_study_text,
-        height=220,
-        label_visibility="collapsed",
+    if not case_requested:
+        button_col, _ = st.columns([0.28, 0.72])
+        with button_col:
+            if st.button(
+                "Load case study",
+                key="load_case_study_card",
+                disabled=(selected_stakeholder == "All stakeholders"),
+            ):
+                st.session_state["explore_case_requested"] = True
+                st.session_state["explore_case_index"] = 0
+                st.rerun()
+    chip_text = "Specific stakeholder" if selected_stakeholder == "All stakeholders" else selected_stakeholder
+    if is_cached_case and case_study_title_text and not case_study_title_text.startswith("Cached article: "):
+        case_study_title_text = f"Cached article: {case_study_title_text}"
+    headline_html = (
+        f'<div class="case-study-headline">{escape(case_study_title_text)}</div>'
+        if case_study_title_text
+        else ""
     )
+    case_html = (
+        '<div class="case-study-shell">'
+        f'<div class="case-study-chip">{chip_text}</div>'
+        f"{headline_html}"
+        f'<div class="case-study-body">{escape(case_study_summary)}</div>'
+    )
+    if case_study_relevance:
+        case_html += f'<div class="case-study-body case-study-relevance">{escape(case_study_relevance)}</div>'
     if source_url:
-        st.markdown(f"[View OECD source list]({source_url})")
+        case_html += (
+            '<div class="case-study-source">'
+            '<div class="case-study-source-label">Source: OECD.AI</div>'
+            f'<a href="{source_url}" target="_blank">{source_label or "View OECD source list"}</a>'
+            "</div>"
+        )
+    case_html += "</div>"
+    st.markdown(case_html, unsafe_allow_html=True)
+    if selected_stakeholder != "All stakeholders" and case_requested:
+        if st.button("Show another case", key=f"another_case_{selected_stakeholder}"):
+            st.session_state["explore_case_index"] = st.session_state.get("explore_case_index", 0) + 1
+            st.rerun()
     st.markdown("</div>", unsafe_allow_html=True)
 
 
@@ -746,9 +852,11 @@ def sync_explore_year_from_top() -> None:
     st.session_state["explore_selected_year_label"] = st.session_state["explore_selected_year_label_top"]
 
 
-def sync_explore_year_from_bottom() -> None:
-    """Sync the shared Explore year selection from the bottom radio control."""
-    st.session_state["explore_selected_year_label"] = st.session_state["explore_selected_year_label_bottom"]
+def clear_explore_stakeholder_filter() -> None:
+    """Reset the Explore stakeholder filter and related case-study state."""
+    st.session_state["explore_selected_stakeholder"] = None
+    st.session_state["explore_case_requested"] = False
+    st.session_state["explore_case_index"] = 0
 
 
 inject_page_styles()
@@ -782,9 +890,9 @@ with story_tab:
     metric_col1, metric_col2, metric_col3, metric_col4 = st.columns(4, gap="medium")
     with metric_col1:
         metric_card(
-            "Reported cases",
-            story_metrics["total_cases"],
-            "Reported cases across the full-year 2020-2025 view in the source data.",
+            "Incidents and hazards",
+            story_metrics["total_incidents"],
+            "Incidents and hazards across the full-year 2020-2025 view in the source data.",
         )
     with metric_col2:
         metric_card(
@@ -800,9 +908,9 @@ with story_tab:
         )
     with metric_col4:
         metric_card(
-            "Change over time",
+            "Incidents and hazards over time",
             story_metrics["growth"],
-            f"Change from {story_metrics['first_year']} to {story_metrics['last_year']} in yearly totals.",
+            f"Change from {story_metrics['first_year']} to {story_metrics['last_year']} in yearly incidents and hazards totals.",
         )
 
     incidents_trend_fig = go.Figure()
@@ -850,24 +958,27 @@ with story_tab:
                 "Affected Stakeholders",
                 "This view highlights which groups appear most often in reported AI harm cases across the current overview window.",
             )
+            st.markdown('<div class="chart-shell">', unsafe_allow_html=True)
+            st.plotly_chart(story_stakeholder_fig, use_container_width=True)
+            st.markdown("</div>", unsafe_allow_html=True)
             st.markdown(
                 f'<div class="section-copy">{story_stakeholder_note}</div>',
                 unsafe_allow_html=True,
             )
-            st.markdown('<div class="chart-shell">', unsafe_allow_html=True)
-            st.plotly_chart(story_stakeholder_fig, use_container_width=True)
-            st.markdown("</div>", unsafe_allow_html=True)
             st.markdown("</div>", unsafe_allow_html=True)
     with story_col2:
         st.markdown('<div class="section-card">', unsafe_allow_html=True)
         insight_card(
-            "Example from the source data",
-            "One example in the source data concerns xAI's Grok, which was reported to have generated "
-            "sexually explicit deepfake images, including non-consensual images of women and minors.",
+            "Additional stakeholder groups",
+            "The source dataset does not separately code LGBTQ+ people, people of color, or people with disabilities as distinct stakeholder categories, though these groups are referenced in many of the underlying articles.",
         )
         insight_card(
-            "Note about impacted stakeholders",
-            "General public is excluded here because it can reflect harms spread across multiple stakeholder groups.",
+            "Stakeholder categories can overlap",
+            "A reported case can still involve more than one group. For example, women officials may also be part of government, and workers may also be consumers, so one article can be categorized under several stakeholder groups even when one is highlighted most clearly.",
+        )
+        insight_card(
+            "What a case means here",
+            "A case in this dashboard is a reported AI-related issue that has been categorized in the OECD monitor. The counts show how reported cases are sorted in the dataset, not a count of unique real-world events.",
         )
         st.markdown("</div>", unsafe_allow_html=True)
 
@@ -880,8 +991,16 @@ with story_tab:
             "This view shows where reported AI harm appears most often across industries in the current overview window.",
         )
         insight_card(
-            "Why this matters",
-            "Looking across industries helps show where reported AI harm appears most often in the dataset.",
+            "Where AI harm is surfacing",
+            "The industries at the top are not necessarily using the most AI. They are the ones where problems are being reported, noticed, and categorized most often.",
+        )
+        insight_card(
+            "Visibility shapes the pattern",
+            "Some industries rise in this view because their failures are more public-facing, more regulated, or more likely to be covered by the news.",
+        )
+        insight_card(
+            "Risk is interpreted by people",
+            "AI risk is not only technical. It is also shaped by how leaders, workers, users, and outside observers recognize harm, respond to warning signs, and decide what deserves attention.",
         )
         st.markdown("</div>", unsafe_allow_html=True)
     with story_col4:
@@ -932,20 +1051,34 @@ with explore_tab:
                 key="explore_selected_year_label_top",
                 on_change=sync_explore_year_from_top,
             )
-        include_2026 = st.checkbox("Include partial 2026 data", value=False)
         selected_year_label = st.session_state["explore_selected_year_label"]
+        include_2026_available = selected_year_label == "All years"
+        if not include_2026_available:
+            st.session_state["explore_include_2026"] = False
+        include_2026 = st.checkbox(
+            "Include partial 2026 data",
+            key="explore_include_2026",
+            disabled=not include_2026_available,
+        )
 
     selected_years = YEAR_FILTER_OPTIONS[selected_year_label]
     if selected_year_label == "All years" and include_2026:
         selected_years = (selected_years[0], 2026)
 
+    current_stakeholder_state = st.session_state.get("explore_selected_stakeholder") or "All stakeholders"
+    previous_stakeholder_state = st.session_state.get("explore_case_stakeholder")
+    if previous_stakeholder_state != current_stakeholder_state:
+        st.session_state["explore_case_index"] = 0
+        st.session_state["explore_case_requested"] = False
+        st.session_state["explore_case_stakeholder"] = current_stakeholder_state
+
     explore_data = prepare_explore_data(
         selected_years=selected_years,
-        selected_stakeholder=st.session_state.get("explore_selected_stakeholder") or "All stakeholders",
+        selected_stakeholder=current_stakeholder_state,
     )
     explore_stakeholder_df = explore_data["explore_stakeholder_df"]
     stakeholder_options = sorted(explore_stakeholder_df["Stakeholder"].unique())
-    selected_stakeholder = st.session_state.get("explore_selected_stakeholder") or "All stakeholders"
+    selected_stakeholder = current_stakeholder_state
     explore_data = prepare_explore_data(
         selected_years=selected_years,
         selected_stakeholder=selected_stakeholder,
@@ -961,8 +1094,6 @@ with explore_tab:
         selected_stakeholder,
         year_window_label,
     )
-    case_study_text, source_url = load_case_study_content(selected_stakeholder)
-
     render_explore_summary_row(
         stakeholder_high_level_df=stakeholder_high_level_df,
         industry_trend_df=industry_trend_df,
@@ -975,21 +1106,34 @@ with explore_tab:
         stakeholder_options=stakeholder_options,
         selected_stakeholder=selected_stakeholder,
     )
+    if st.session_state.get("explore_case_requested") and selected_stakeholder != "All stakeholders":
+        case_study_title_text, case_study_summary, case_study_relevance, source_url, source_label, is_cached_case = load_case_study_content(
+            selected_stakeholder,
+            st.session_state.get("explore_case_index", 0),
+        )
+    else:
+        case_study_title_text, case_study_summary, case_study_relevance, source_url, source_label, is_cached_case = (
+            "",
+            (
+                f"Load one coded example involving {selected_stakeholder.lower()}."
+                if selected_stakeholder != "All stakeholders"
+                else "Choose a specific stakeholder above to load one coded example."
+            ),
+            "",
+            "",
+            "",
+            False,
+        )
     render_explore_case_study(
         selected_stakeholder=selected_stakeholder,
-        case_study_text=case_study_text,
+        case_study_title_text=case_study_title_text,
+        case_study_summary=case_study_summary,
+        case_study_relevance=case_study_relevance,
         source_url=source_url,
+        source_label=source_label,
+        case_requested=bool(st.session_state.get("explore_case_requested")),
+        is_cached_case=is_cached_case,
     )
-    st.markdown('<div class="explore-bottom-radio">', unsafe_allow_html=True)
-    st.radio(
-        "Time period in the data",
-        options=list(YEAR_FILTER_OPTIONS.keys()),
-        index=list(YEAR_FILTER_OPTIONS.keys()).index(st.session_state["explore_selected_year_label"]),
-        horizontal=True,
-        key="explore_selected_year_label_bottom",
-        on_change=sync_explore_year_from_bottom,
-    )
-    st.markdown("</div>", unsafe_allow_html=True)
     st.markdown("</div>", unsafe_allow_html=True)
 
 with about_tab:
@@ -1060,7 +1204,7 @@ with about_tab:
         section_intro(
             "How to read it",
             "What the counts mean",
-            'A case in this dashboard refers to news coverage about a reported AI-related issue. The counts reflect how those articles are categorized in the OECD monitor, rather than a count of unique real-world events. See the <a href="https://oecd.ai/en/incidents-methodology" target="_blank">OECD incidents methodology page</a> for more detail.',
+            'A case in this dashboard refers to a reported AI-related issue that has been categorized in the OECD monitor. The counts show how reported cases are sorted in the dataset, rather than a count of unique real-world events. See the <a href="https://oecd.ai/en/incidents-methodology" target="_blank">OECD incidents methodology page</a> for more detail.',
         )
         insight_card(
             "Stakeholder analysis",
