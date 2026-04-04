@@ -185,6 +185,19 @@ div[data-testid="stCheckbox"] label,
 div[data-testid="stSelectbox"] label {
     color: #4b4b4b;
 }
+.explore-bottom-radio div[data-testid="stRadio"] > div {
+    background: rgba(245, 245, 245, 0.92) !important;
+    border: 1px solid rgba(150, 150, 150, 0.16) !important;
+    border-radius: 18px !important;
+    padding: 0.8rem 1rem !important;
+}
+.explore-bottom-radio div[data-testid="stRadio"] label,
+.explore-bottom-radio div[data-testid="stRadio"] span {
+    color: #3f3f3f !important;
+}
+.explore-bottom-radio div[data-testid="stRadio"] input[type="radio"] {
+    accent-color: #b85c6b !important;
+}
 div[data-testid="stVerticalBlock"] > div:has(> .section-card),
 div[data-testid="stVerticalBlock"] > div:has(> .metric-card),
 div[data-testid="stVerticalBlock"] > div:has(> .insight-card) {

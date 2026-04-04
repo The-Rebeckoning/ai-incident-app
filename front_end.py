@@ -741,6 +741,16 @@ def render_explore_case_study(
     st.markdown("</div>", unsafe_allow_html=True)
 
 
+def sync_explore_year_from_top() -> None:
+    """Sync the shared Explore year selection from the top control."""
+    st.session_state["explore_selected_year_label"] = st.session_state["explore_selected_year_label_top"]
+
+
+def sync_explore_year_from_bottom() -> None:
+    """Sync the shared Explore year selection from the bottom radio control."""
+    st.session_state["explore_selected_year_label"] = st.session_state["explore_selected_year_label_bottom"]
+
+
 inject_page_styles()
 story_metrics = build_story_metrics()
 story_stakeholder_fig, story_industry_fig, story_harm_fig = build_story_figures()
@@ -900,15 +910,30 @@ with explore_tab:
     )
 
     filter_col1, filter_col2 = st.columns([1.05, 0.95], gap="large")
+    if st.session_state.get("explore_selected_year_label") not in YEAR_FILTER_OPTIONS:
+        st.session_state["explore_selected_year_label"] = list(YEAR_FILTER_OPTIONS.keys())[0]
 
     with filter_col1:
-        selected_year_label = st.radio(
-            "Time period in the data",
-            options=list(YEAR_FILTER_OPTIONS.keys()),
-            index=0,
-            horizontal=True,
-        )
+        if hasattr(st, "segmented_control"):
+            selected_year_label = st.segmented_control(
+                "Time period in the data",
+                options=list(YEAR_FILTER_OPTIONS.keys()),
+                default=st.session_state["explore_selected_year_label"],
+                selection_mode="single",
+                key="explore_selected_year_label_top",
+                on_change=sync_explore_year_from_top,
+            )
+        else:
+            selected_year_label = st.radio(
+                "Time period in the data",
+                options=list(YEAR_FILTER_OPTIONS.keys()),
+                index=list(YEAR_FILTER_OPTIONS.keys()).index(st.session_state["explore_selected_year_label"]),
+                horizontal=True,
+                key="explore_selected_year_label_top",
+                on_change=sync_explore_year_from_top,
+            )
         include_2026 = st.checkbox("Include partial 2026 data", value=False)
+        selected_year_label = st.session_state["explore_selected_year_label"]
 
     selected_years = YEAR_FILTER_OPTIONS[selected_year_label]
     if selected_year_label == "All years" and include_2026:
@@ -955,6 +980,16 @@ with explore_tab:
         case_study_text=case_study_text,
         source_url=source_url,
     )
+    st.markdown('<div class="explore-bottom-radio">', unsafe_allow_html=True)
+    st.radio(
+        "Time period in the data",
+        options=list(YEAR_FILTER_OPTIONS.keys()),
+        index=list(YEAR_FILTER_OPTIONS.keys()).index(st.session_state["explore_selected_year_label"]),
+        horizontal=True,
+        key="explore_selected_year_label_bottom",
+        on_change=sync_explore_year_from_bottom,
+    )
+    st.markdown("</div>", unsafe_allow_html=True)
     st.markdown("</div>", unsafe_allow_html=True)
 
 with about_tab:
