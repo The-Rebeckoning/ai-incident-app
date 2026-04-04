@@ -1,0 +1,192 @@
+:root {
+    --text-main: #171717;
+    --text-strong: #111111;
+    --text-muted: #4f4f4f;
+    --text-soft: #666666;
+    --hero-text: #f8f8f8;
+    --accent: #8e3b46;
+    --surface-soft: rgba(250, 250, 250, 0.38);
+    --surface-soft-2: rgba(244, 244, 244, 0.42);
+    --surface-widget: rgba(246, 246, 246, 0.86);
+    --border-soft: rgba(120, 120, 120, 0.12);
+    --border-widget: rgba(125, 125, 125, 0.16);
+}
+
+.stApp {
+    background:
+        radial-gradient(circle at top left, rgba(0, 0, 0, 0.06), transparent 34%),
+        radial-gradient(circle at top right, rgba(0, 0, 0, 0.04), transparent 28%),
+        linear-gradient(180deg, #fafafa 0%, #f0f0f0 46%, #f7f7f7 100%);
+    color: var(--text-main);
+}
+.block-container {
+    max-width: 1180px;
+    padding-top: 2rem;
+    padding-bottom: 3rem;
+}
+.stApp p,
+.stApp span,
+.stApp label,
+.stApp li,
+.stApp button,
+.stApp a,
+.stApp div[data-testid="stMarkdownContainer"],
+.stApp div[data-testid="stText"],
+.stApp div[data-baseweb="tab"] {
+    color: var(--text-main);
+}
+h1, h2, h3 {
+    color: var(--text-strong);
+    letter-spacing: -0.02em;
+}
+.hero-shell {
+    padding: 2.4rem 2.6rem;
+    border-radius: 28px;
+    background: linear-gradient(145deg, rgba(20, 20, 20, 0.98), rgba(52, 52, 52, 0.96));
+    color: var(--hero-text);
+    box-shadow: 0 20px 42px rgba(0, 0, 0, 0.14);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    margin-bottom: 0.7rem;
+}
+.hero-eyebrow {
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: rgba(225, 225, 225, 0.92);
+    margin-bottom: 0.75rem;
+}
+.hero-title {
+    font-size: 3rem;
+    line-height: 1.02;
+    font-weight: 700;
+    margin-bottom: 0.85rem;
+    max-width: 10ch;
+}
+.hero-copy {
+    font-size: 1.05rem;
+    line-height: 1.7;
+    max-width: 58ch;
+    color: rgba(240, 240, 240, 0.9);
+}
+.hero-note {
+    margin-top: 1.1rem;
+    padding: 0.9rem 1rem;
+    border-radius: 18px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    font-size: 0.96rem;
+}
+.hero-shell,
+.hero-shell * {
+    color: var(--hero-text) !important;
+}
+.section-card {
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: 24px;
+    padding: 0.95rem 1.05rem 0.85rem;
+    box-shadow: none;
+    margin-bottom: 0.75rem;
+}
+.metric-card {
+    padding: 0.8rem 0.85rem 0.9rem;
+    border-radius: 22px;
+    background: transparent;
+    border: 1px solid transparent;
+    min-height: 116px;
+    box-shadow: none;
+}
+.metric-label {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #6a6a6a;
+    margin-bottom: 0.55rem;
+    font-weight: 700;
+}
+.metric-value {
+    font-size: 2rem;
+    line-height: 1;
+    color: var(--text-strong);
+    margin-bottom: 0.5rem;
+    font-weight: 700;
+}
+.metric-copy {
+    font-size: 0.95rem;
+    line-height: 1.5;
+    color: #505050;
+}
+.section-kicker {
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-size: 0.78rem;
+    color: #6d6d6d;
+    font-weight: 700;
+    margin-bottom: 0.3rem;
+}
+.section-title {
+    font-size: 1.8rem;
+    line-height: 1.08;
+    font-weight: 700;
+    margin-bottom: 0.6rem;
+    color: var(--text-strong);
+}
+.section-copy {
+    font-size: 1rem;
+    line-height: 1.65;
+    color: var(--text-muted);
+    max-width: 62ch;
+    margin-bottom: 0.2rem;
+}
+.insight-card {
+    padding: 0.85rem 0.9rem;
+    border-radius: 20px;
+    background: transparent;
+    border: 1px solid transparent;
+    margin-bottom: 0.6rem;
+}
+.insight-label {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--accent);
+    font-weight: 700;
+    margin-bottom: 0.35rem;
+}
+.insight-text {
+    font-size: 0.98rem;
+    line-height: 1.58;
+    color: #2c2c2c;
+}
+.story-caption {
+    font-size: 0.94rem;
+    color: var(--text-soft);
+    line-height: 1.55;
+}
+.chart-shell {
+    background: transparent;
+    border-radius: 22px;
+    padding: 0.2rem;
+}
+div[data-testid="stSelectbox"] > div,
+div[data-testid="stSelectbox"] [data-baseweb="select"] > div,
+div[data-testid="stTextArea"] textarea {
+    background: var(--surface-widget);
+    border: 1px solid var(--border-widget) !important;
+    color: #2a2a2a !important;
+    border-radius: 18px !important;
+}
+div[data-testid="stSelectbox"] svg {
+    fill: #6a6a6a !important;
+}
+div[data-testid="stRadio"] label,
+div[data-testid="stCheckbox"] label,
+div[data-testid="stSelectbox"] label {
+    color: #4b4b4b;
+}
+div[data-testid="stVerticalBlock"] > div:has(> .section-card),
+div[data-testid="stVerticalBlock"] > div:has(> .metric-card),
+div[data-testid="stVerticalBlock"] > div:has(> .insight-card) {
+    margin-bottom: 0.2rem;
+}
