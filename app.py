@@ -8,9 +8,6 @@ import plotly.graph_objects as go
 import streamlit as st
 
 from ai_lib import (
-    articles_df,
-    harm_types_df,
-    harm_types_long_df,
     incidents_df,
     industries_df,
     industry_long_df,
@@ -73,23 +70,20 @@ industry_monthly_df = industry_monthly_df.melt(
     var_name="Industry",
     value_name="Count",
 )
-harm_df = harm_types_long_df.copy()
 incidents_over_time_df = incidents_df.copy()
 incidents_over_time_df["Date"] = pd.to_datetime(incidents_over_time_df["Date"])
 severity_over_time_df = severity_df.copy()
 severity_over_time_df["Date"] = pd.to_datetime(severity_over_time_df["Date"])
-
-HARM_COLORS = [
-    "#1f1f1f",
-    "#5c5c5c",
-    "#8e3b46",
-    "#b85c6b",
-    "#7a7a7a",
-    "#c78d96",
-    "#a3a3a3",
-]
 STAKEHOLDER_COLORS = ["#1f1f1f", "#4a4a4a", "#7b7b7b", "#8e3b46", "#b85c6b"]
 INDUSTRY_SCALE = ["#f2f2f2", "#b5b5b5", "#2a2a2a"]
+STACKED_AREA_COLORS = [
+    "#1f1f1f",
+    "#4a4a4a",
+    "#7b7b7b",
+    "#8e3b46",
+    "#b85c6b",
+    "#c78d96",
+]
 YEAR_FILTER_OPTIONS = {
     "All years": (2020, 2025),
     "2020-2022": (2020, 2022),
@@ -299,10 +293,6 @@ def build_story_metrics() -> dict[str, str]:
     in_depth_stakeholder_df = story_stakeholder_df[
         ~story_stakeholder_df["Stakeholder"].isin(["General public", "Other"])
     ].copy()
-    story_harm_df = harm_df[
-        harm_df["Year"].between(2020, 2025)
-        & ~harm_df["Harm Type"].isin(["Environmental", "Other"])
-    ].copy()
     story_industry_df = industry_df[industry_df["Year"].between(2020, 2025)].copy()
     story_incidents_df = incidents_over_time_df[
         incidents_over_time_df["Date"].dt.year.between(2020, 2025)
@@ -322,12 +312,6 @@ def build_story_metrics() -> dict[str, str]:
         .sort_values("Count", ascending=False)
     )
     top_industry = industry_totals.iloc[0]
-
-    harm_totals = (
-        story_harm_df.groupby("Harm Type", as_index=False)["Count"].sum()
-        .sort_values("Count", ascending=False)
-    )
-    top_harm = harm_totals.iloc[0]
 
     yearly_totals = (
         story_incidents_df.groupby("Year", as_index=False)["Total Incidents & Hazards"]
@@ -349,24 +333,19 @@ def build_story_metrics() -> dict[str, str]:
         "top_stakeholder": top_stakeholder["Stakeholder"],
         "top_stakeholder_count": f"{int(top_stakeholder['Count']):,}",
         "top_industry": top_industry["Industry"],
-        "top_harm": top_harm["Harm Type"],
         "growth": f"{growth_pct:.0f}%",
         "first_year": str(int(first_year["Year"])),
         "last_year": str(int(last_year["Year"])),
     }
 
 
-def build_story_figures() -> tuple[go.Figure, go.Figure, go.Figure]:
+def build_story_figures() -> tuple[go.Figure, go.Figure]:
     """Create the charts used in the story tab."""
     story_stakeholder_df = stakeholder_df[stakeholder_df["Year"].between(2020, 2025)].copy()
     in_depth_stakeholder_df = story_stakeholder_df[
         ~story_stakeholder_df["Stakeholder"].isin(["General public", "Other"])
     ].copy()
     story_industry_df = industry_df[industry_df["Year"].between(2020, 2025)].copy()
-    story_harm_df = harm_df[
-        harm_df["Year"].between(2020, 2025)
-        & ~harm_df["Harm Type"].isin(["Environmental", "Other"])
-    ].copy()
 
     top_stakeholders = (
         in_depth_stakeholder_df.groupby("Stakeholder", as_index=False)["Count"].sum()
@@ -414,33 +393,7 @@ def build_story_figures() -> tuple[go.Figure, go.Figure, go.Figure]:
     industry_fig.update_layout(coloraxis_showscale=False)
     style_chart(industry_fig, height=460)
 
-    harm_share_df = story_harm_df.copy()
-    harm_share_df["Percentage"] = (
-        harm_share_df["Count"] / harm_share_df.groupby("Year")["Count"].transform("sum")
-    )
-    harm_fig = go.Figure()
-    for index, harm_type in enumerate(sorted(harm_share_df["Harm Type"].unique())):
-        harm_type_df = harm_share_df[harm_share_df["Harm Type"] == harm_type]
-        harm_fig.add_trace(
-            go.Scatter(
-                x=harm_type_df["Year"],
-                y=harm_type_df["Percentage"],
-                mode="lines+markers",
-                name=harm_type,
-                stackgroup="one",
-                line=dict(color=HARM_COLORS[index % len(HARM_COLORS)], width=2),
-                marker=dict(size=6),
-                hovertemplate="%{fullData.name}<br>%{x}: %{y:.0%}<extra></extra>",
-            )
-        )
-    harm_fig.update_layout(
-        title="How does the mix of harm change over time?",
-        yaxis_tickformat=".0%",
-        hovermode="x unified",
-    )
-    style_chart(harm_fig, height=450)
-
-    return stakeholder_fig, industry_fig, harm_fig
+    return stakeholder_fig, industry_fig
 
 
 def build_story_stakeholder_note() -> str:
@@ -858,7 +811,10 @@ def build_explore_industry_figure(
                 mode="lines",
                 stackgroup="one",
                 name=industry_legend_labels.get(industry, industry),
-                line=dict(width=1.2, color=HARM_COLORS[index % len(HARM_COLORS)]),
+                line=dict(
+                    width=1.2,
+                    color=STACKED_AREA_COLORS[index % len(STACKED_AREA_COLORS)],
+                ),
                 customdata=[[industry]] * len(industry_df),
                 hovertemplate="%{customdata[0]}<br>%{x}: %{y:.0%} of coded cases<extra></extra>",
             )
@@ -1146,7 +1102,7 @@ def clear_explore_stakeholder_filter() -> None:
 
 inject_page_styles()
 story_metrics = build_story_metrics()
-story_stakeholder_fig, story_industry_fig, story_harm_fig = build_story_figures()
+story_stakeholder_fig, story_industry_fig = build_story_figures()
 story_stakeholder_note = build_story_stakeholder_note()
 
 story_tab, explore_tab, about_tab, downloads_tab = st.tabs(

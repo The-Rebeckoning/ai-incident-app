@@ -63,7 +63,10 @@ h1, h2, h3 {
     line-height: 1.02;
     font-weight: 700;
     margin-bottom: 0.85rem;
-    max-width: 10ch;
+    max-width: 16ch;
+    word-break: normal;
+    overflow-wrap: normal;
+    hyphens: none;
 }
 .hero-copy {
     font-size: 1.05rem;
@@ -90,6 +93,37 @@ h1, h2, h3 {
     padding: 0.95rem 1.05rem 0.85rem;
     box-shadow: none;
     margin-bottom: 0.75rem;
+}
+.explore-intro-card {
+    padding: 0.7rem 0.95rem 0.55rem;
+    margin-bottom: 0.2rem;
+}
+.explore-intro-card .section-kicker {
+    margin-bottom: 0.18rem;
+}
+.explore-intro-card .section-title {
+    margin-bottom: 0.35rem;
+}
+.explore-intro-card .section-copy {
+    margin-bottom: 0;
+    max-width: 46ch;
+}
+.stakeholder-chart-card {
+    padding-bottom: 0.15rem;
+    margin-bottom: 0.15rem;
+}
+.stakeholder-stats-card {
+    padding-top: 0.25rem;
+}
+.stakeholder-story-card {
+    padding-top: 0.3rem;
+}
+.stakeholder-chart-intro-spacer {
+    height: 0.35rem;
+}
+.stakeholder-case-study-card {
+    margin-top: 0;
+    padding-top: 0.35rem;
 }
 .metric-card {
     padding: 0.8rem 0.85rem 0.9rem;
@@ -141,12 +175,83 @@ h1, h2, h3 {
     max-width: 62ch;
     margin-bottom: 0.2rem;
 }
+.compact-section-kicker {
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-size: 0.72rem;
+    color: var(--accent);
+    font-weight: 700;
+    margin-bottom: 0.22rem;
+}
+.compact-section-title {
+    font-size: 1.25rem;
+    line-height: 1.18;
+    font-weight: 700;
+    color: var(--text-strong);
+    margin-bottom: 0.35rem;
+}
+.compact-section-copy {
+    font-size: 0.94rem;
+    line-height: 1.5;
+    color: var(--text-muted);
+    max-width: 56ch;
+    margin-bottom: 0.05rem;
+}
+.story-bridge-card {
+    margin-top: 0.4rem;
+    padding: 0.85rem 0.95rem 0.2rem;
+}
+.story-bridge-title {
+    font-size: 1.18rem;
+    line-height: 1.25;
+    color: var(--text-strong);
+    font-weight: 700;
+    margin-bottom: 0.35rem;
+    max-width: 28ch;
+}
+.story-bridge-copy {
+    font-size: 0.98rem;
+    line-height: 1.58;
+    color: var(--text-muted);
+    max-width: 60ch;
+}
+.standalone-story-bridge-copy {
+    margin-top: 0.4rem;
+    padding: 0 0.95rem 0.15rem;
+}
 .insight-card {
     padding: 0.85rem 0.9rem;
     border-radius: 20px;
     background: transparent;
     border: 1px solid transparent;
     margin-bottom: 0.6rem;
+}
+.mini-stat-card {
+    padding: 0.75rem 0.85rem 0.8rem;
+    border-radius: 18px;
+    background: rgba(248, 248, 248, 0.58);
+    border: 1px solid rgba(125, 125, 125, 0.14);
+    margin-top: 0.55rem;
+}
+.mini-stat-label {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #6b6b6b;
+    font-weight: 700;
+    margin-bottom: 0.38rem;
+}
+.mini-stat-value {
+    font-size: 1.15rem;
+    line-height: 1.2;
+    color: var(--text-strong);
+    font-weight: 700;
+}
+.mini-stat-copy {
+    margin-top: 0.28rem;
+    font-size: 0.9rem;
+    line-height: 1.45;
+    color: var(--text-muted);
 }
 .insight-label {
     font-size: 0.75rem;
@@ -156,10 +261,19 @@ h1, h2, h3 {
     font-weight: 700;
     margin-bottom: 0.35rem;
 }
+.insight-note {
+    font-size: 0.88rem;
+    line-height: 1.45;
+    color: var(--text-soft);
+    margin-bottom: 0.55rem;
+}
 .insight-text {
     font-size: 0.98rem;
     line-height: 1.58;
     color: #2c2c2c;
+}
+.overall-peak-card .insight-text {
+    min-height: 10.2rem;
 }
 .story-caption {
     font-size: 0.94rem;
@@ -167,8 +281,8 @@ h1, h2, h3 {
     line-height: 1.55;
 }
 .case-study-shell {
-    margin-top: 0.85rem;
-    padding: 1rem 1.05rem 1rem;
+    margin-top: 0.55rem;
+    padding: 0.85rem 0.95rem 0.95rem;
     border-radius: 22px;
     background:
         linear-gradient(180deg, rgba(252, 252, 252, 0.96), rgba(242, 242, 242, 0.94));
@@ -176,7 +290,7 @@ h1, h2, h3 {
 }
 .case-study-chip {
     display: inline-block;
-    margin-bottom: 0.85rem;
+    margin-bottom: 0.7rem;
     padding: 0.35rem 0.7rem;
     border-radius: 999px;
     background: rgba(184, 92, 107, 0.12);
@@ -191,16 +305,16 @@ h1, h2, h3 {
     line-height: 1.35;
     color: var(--text-strong);
     font-weight: 700;
-    margin-bottom: 0.7rem;
+    margin-bottom: 0.55rem;
 }
 .case-study-body {
     font-size: 1rem;
-    line-height: 1.7;
+    line-height: 1.64;
     color: #2b2b2b;
     white-space: pre-wrap;
 }
 .case-study-relevance {
-    margin-top: 1rem;
+    margin-top: 0.8rem;
 }
 .case-study-source {
     margin-top: 0.9rem;
@@ -244,6 +358,12 @@ div[data-testid="stSelectbox"] label {
 .stButton > button {
     font-size: 0.88rem !important;
     white-space: nowrap !important;
+}
+.stakeholder-clear-button .stButton > button {
+    font-size: 0.78rem !important;
+    line-height: 1 !important;
+    padding: 0.42rem 0.5rem !important;
+    min-height: 2.7rem !important;
 }
 .stButton > button:disabled {
     background: rgba(232, 232, 232, 0.9) !important;
