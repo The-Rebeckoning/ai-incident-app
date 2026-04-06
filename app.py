@@ -1,4 +1,7 @@
 import os
+import re
+import time
+from datetime import datetime
 from html import escape
 from pathlib import Path
 
@@ -23,6 +26,8 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="collapsed",
 )
+
+CASE_STUDY_MIN_SPINNER_SECONDS = 5.0
 
 stakeholder_df = stakeholder_time_series_df.copy()
 industry_df = industry_long_df.copy()
@@ -872,8 +877,11 @@ def load_case_study_content(selected_stakeholder: str, case_index: int) -> tuple
                 "",
                 False,
             )
-        with st.spinner("Loading AI case study..."):
-            case_study_data = load_case_study(selected_stakeholder, case_index=case_index)
+        load_started_at = time.perf_counter()
+        case_study_data = load_case_study(selected_stakeholder, case_index=case_index)
+        elapsed = time.perf_counter() - load_started_at
+        if elapsed < CASE_STUDY_MIN_SPINNER_SECONDS:
+            time.sleep(CASE_STUDY_MIN_SPINNER_SECONDS - elapsed)
         source_label = (
             "View OECD article"
             if case_study_data.get("source_list_url")
@@ -890,6 +898,17 @@ def load_case_study_content(selected_stakeholder: str, case_index: int) -> tuple
         )
     except Exception as exc:
         return "", f"Unable to load AI case study: {exc}", "", "", "", False
+
+
+def format_case_study_date(source_url: str) -> str:
+    """Extract and format an OECD incident date from the article URL."""
+    match = re.search(r"/incidents/(\d{4}-\d{2}-\d{2})-", source_url or "")
+    if not match:
+        return ""
+    try:
+        return datetime.strptime(match.group(1), "%Y-%m-%d").strftime("%B %d, %Y")
+    except ValueError:
+        return ""
 
 
 def render_explore_time_filter(
@@ -930,13 +949,7 @@ def render_explore_stakeholder_row(
     filtered_stakeholder_df: pd.DataFrame,
     stakeholder_high_level_df: pd.DataFrame,
     include_2026: bool,
-    case_study_title_text: str,
-    case_study_summary: str,
-    case_study_relevance: str,
-    source_url: str,
-    source_label: str,
     case_requested: bool,
-    is_cached_case: bool,
 ) -> None:
     """Render the stakeholder top row plus a supporting detail row."""
     chart_row_col1, chart_row_col2 = st.columns([0.72, 1.28], gap="large")
@@ -1013,8 +1026,9 @@ def render_explore_stakeholder_row(
             case_study_copy,
         )
         if not case_requested:
-            button_col, _ = st.columns([0.46, 0.54])
+            button_col, _ = st.columns([0.3, 0.7])
             with button_col:
+                st.markdown('<div class="linked-case-button-wrap">', unsafe_allow_html=True)
                 if st.button(
                     "Load related coverage",
                     key="load_case_study_card",
@@ -1023,21 +1037,60 @@ def render_explore_stakeholder_row(
                     st.session_state["explore_case_requested"] = True
                     st.session_state["explore_case_index"] = 0
                     st.rerun()
+                st.markdown("</div>", unsafe_allow_html=True)
         st.markdown("</div>", unsafe_allow_html=True)
     with detail_row_col2:
         st.markdown('<div class="section-card stakeholder-case-study-card">', unsafe_allow_html=True)
         chip_text = "Specific stakeholder" if selected_stakeholder == "All stakeholders" else selected_stakeholder
-        if is_cached_case and case_study_title_text and not case_study_title_text.startswith("Cached article: "):
-            case_study_title_text = f"Cached article: {case_study_title_text}"
+        if case_requested and selected_stakeholder != "All stakeholders":
+            with st.spinner("Loading AI case study..."):
+                (
+                    case_study_title_text,
+                    case_study_summary,
+                    case_study_relevance,
+                    source_url,
+                    source_label,
+                    _is_cached_case,
+                ) = load_case_study_content(
+                    selected_stakeholder,
+                    st.session_state.get("explore_case_index", 0),
+                )
+        else:
+            (
+                case_study_title_text,
+                case_study_summary,
+                case_study_relevance,
+                source_url,
+                source_label,
+                _is_cached_case,
+            ) = (
+                "",
+                (
+                    f"Load one reported case involving {selected_stakeholder.lower()}."
+                    if selected_stakeholder != "All stakeholders"
+                    else "Choose a specific stakeholder above to load one reported case."
+                ),
+                "",
+                "",
+                "",
+                False,
+            )
         headline_html = (
             f'<div class="case-study-headline">{escape(case_study_title_text)}</div>'
             if case_study_title_text
+            else ""
+        )
+        case_study_date_text = format_case_study_date(source_url)
+        date_html = (
+            f'<div class="case-study-date">{escape(case_study_date_text)}</div>'
+            if case_study_date_text
             else ""
         )
         case_html = (
             '<div class="case-study-shell">'
             f'<div class="case-study-chip">{chip_text}</div>'
             f"{headline_html}"
+            f"{date_html}"
             f'<div class="case-study-body">{escape(case_study_summary)}</div>'
         )
         if case_study_relevance:
@@ -1052,9 +1105,15 @@ def render_explore_stakeholder_row(
         case_html += "</div>"
         st.markdown(case_html, unsafe_allow_html=True)
         if selected_stakeholder != "All stakeholders" and case_requested:
-            if st.button("Show another case", key=f"another_case_{selected_stakeholder}"):
-                st.session_state["explore_case_index"] = st.session_state.get("explore_case_index", 0) + 1
-                st.rerun()
+            button_col, _ = st.columns([0.28, 0.72])
+            with button_col:
+                st.markdown('<div class="linked-case-button-wrap">', unsafe_allow_html=True)
+                st.button(
+                    "Show another case",
+                    key=f"another_case_{selected_stakeholder}",
+                    on_click=advance_explore_case_index,
+                )
+                st.markdown("</div>", unsafe_allow_html=True)
         st.markdown("</div>", unsafe_allow_html=True)
 
 
@@ -1098,6 +1157,11 @@ def clear_explore_stakeholder_filter() -> None:
     st.session_state["explore_selected_stakeholder"] = None
     st.session_state["explore_case_requested"] = False
     st.session_state["explore_case_index"] = 0
+
+
+def advance_explore_case_index() -> None:
+    """Advance the related-case index before the next rerun starts."""
+    st.session_state["explore_case_index"] = st.session_state.get("explore_case_index", 0) + 1
 
 
 inject_page_styles()
@@ -1299,24 +1363,6 @@ with explore_tab:
     )
     render_explore_time_filter(selected_year_label, include_2026_available)
     st.markdown("</div>", unsafe_allow_html=True)
-    if st.session_state.get("explore_case_requested") and selected_stakeholder != "All stakeholders":
-        case_study_title_text, case_study_summary, case_study_relevance, source_url, source_label, is_cached_case = load_case_study_content(
-            selected_stakeholder,
-            st.session_state.get("explore_case_index", 0),
-        )
-    else:
-        case_study_title_text, case_study_summary, case_study_relevance, source_url, source_label, is_cached_case = (
-            "",
-            (
-                f"Load one reported case involving {selected_stakeholder.lower()}."
-                if selected_stakeholder != "All stakeholders"
-                else "Choose a specific stakeholder above to load one reported case."
-            ),
-            "",
-            "",
-            "",
-            False,
-        )
     render_explore_industry_row(
         industry_fig=industry_fig,
         industry_trend_df=industry_trend_df,
@@ -1330,13 +1376,7 @@ with explore_tab:
         filtered_stakeholder_df=filtered_stakeholder_df,
         stakeholder_high_level_df=stakeholder_high_level_df,
         include_2026=include_2026,
-        case_study_title_text=case_study_title_text,
-        case_study_summary=case_study_summary,
-        case_study_relevance=case_study_relevance,
-        source_url=source_url,
-        source_label=source_label,
         case_requested=bool(st.session_state.get("explore_case_requested")),
-        is_cached_case=is_cached_case,
     )
     st.markdown("</div>", unsafe_allow_html=True)
 

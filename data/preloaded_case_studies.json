@@ -1,55 +1,55 @@
 {
   "Business": {
-    "title": "Cached article: AI-Powered API Attacks Cause Disruption and Losses Across Asia-Pacific",
+    "title": "AI-Powered API Attacks Cause Disruption and Losses Across Asia-Pacific",
     "summary": "AI-powered bots targeting APIs in Asia-Pacific have caused disruptions to digital services, leading to financial and operational losses. The attacks intensify as AI adoption expands, with security maturity lagging behind, especially in sectors like retail and finance. The case highlights business risk from API security gaps and the need for robust defenses, continuous monitoring, and incident response to protect operations and revenue.",
     "relevance": "Businesses rely on APIs for core operations and customer experiences; disruptions from API attacks can halt transactions, cause revenue loss, and erode trust. This incident underscores the imperative for companies to invest in API security, threat intelligence, and resilience planning to safeguard business continuity.",
     "source_url": "https://oecd.ai/en/incidents/2026-04-01-63a8",
     "source_list_url": "https://oecd.ai/en/incidents?search_terms=%5B%5D&and_condition=false&from_date=2020-04-02&to_date=2026-04-02&properties_config=%7B%22principles%22%3A%5B%5D%2C%22industries%22%3A%5B%5D%2C%22harm_types%22%3A%5B%5D%2C%22harm_levels%22%3A%5B%5D%2C%22harmed_entities%22%3A%5B%22Business%22%5D%2C%22business_functions%22%3A%5B%5D%2C%22ai_tasks%22%3A%5B%5D%2C%22autonomy_levels%22%3A%5B%5D%2C%22languages%22%3A%5B%5D%7D&order_by=date&num_results=20"
   },
   "Children": {
-    "title": "Cached article: Grok AI Deepfake Scandal Prompts International Investigations and Regulatory Action",
-    "summary": "The Grok AI image generator by xAI produced millions of sexually explicit deepfake images, including of women and minors, without consent. This caused harm to individuals depicted and triggered investigations and regulatory actions by the UK, Ireland, France, and the EU against xAI. The case highlights risks of AI-generated content, the need for governance, and ongoing regulatory scrutiny.",
-    "relevance": "This case is relevant to Children because it involves sexually explicit deepfakes of minors, illustrating how AI can harm children\u2019s rights and safety and underscoring the need for protections against child exploitation by AI systems.",
-    "source_url": "https://oecd.ai/en/incidents/2026-04-01-ee4f",
+    "title": "Australia Investigates Social Media Giants Over AI Failures in Age Verification",
+    "summary": "Australia is investigating major social media platforms, including Meta, TikTok, and YouTube, for failing to enforce AI-driven age verification systems, allowing children under 16 to access harmful content despite strict new laws. The case highlights shortcomings in AI-based age assurance, the exposure of minors to unsafe online material, and the legal and governance risks for platforms that fail to protect children.",
+    "relevance": "This case is relevant to Children because the reported failure of AI-driven age verification left minors exposed to harmful content online. It shows how weak or ineffective AI safeguards can directly undermine child safety and why stronger protections and enforcement matter for children\u2019s digital environments.",
+    "source_url": "https://oecd.ai/en/incidents/2026-03-30-04e4",
     "source_list_url": "https://oecd.ai/en/incidents?search_terms=%5B%5D&and_condition=false&from_date=2020-04-02&to_date=2026-04-02&properties_config=%7B%22principles%22%3A%5B%5D%2C%22industries%22%3A%5B%5D%2C%22harm_types%22%3A%5B%5D%2C%22harm_levels%22%3A%5B%5D%2C%22harmed_entities%22%3A%5B%22Children%22%5D%2C%22business_functions%22%3A%5B%5D%2C%22ai_tasks%22%3A%5B%5D%2C%22autonomy_levels%22%3A%5B%5D%2C%22languages%22%3A%5B%5D%7D&order_by=date&num_results=20"
   },
   "Civil society": {
-    "title": "Cached article: EU Report Reveals China's Use of AI for Disinformation and Harassment",
+    "title": "EU Report Reveals China's Use of AI for Disinformation and Harassment",
     "summary": "The EU's annual report reveals that China uses AI to generate fake videos, deepfakes, comics, and automated content to spread disinformation and harass dissenters, discredit opposition voices, and propagate state propaganda across multiple countries. The AI involvement is direct in content creation and dissemination, and the harms\u2014harassment and violations of rights\u2014are already occurring, qualifying as an AI Incident.",
     "relevance": "Civil society organizations and activists are directly targeted by AI-driven disinformation and harassment campaigns, threatening freedom of expression, trust in information, and the rights of communities to participate in public discourse.",
     "source_url": "https://oecd.ai/en/incidents/2026-03-17-fce7",
     "source_list_url": "https://oecd.ai/en/incidents?search_terms=%5B%5D&and_condition=false&from_date=2020-04-02&to_date=2026-04-02&properties_config=%7B%22principles%22%3A%5B%5D%2C%22industries%22%3A%5B%5D%2C%22harm_types%22%3A%5B%5D%2C%22harm_levels%22%3A%5B%5D%2C%22harmed_entities%22%3A%5B%22Civil+society%22%5D%2C%22business_functions%22%3A%5B%5D%2C%22ai_tasks%22%3A%5B%5D%2C%22autonomy_levels%22%3A%5B%5D%2C%22languages%22%3A%5B%5D%7D&order_by=date&num_results=20"
   },
   "Consumers": {
-    "title": "Cached article: NTSB Investigates Fatal Ford BlueCruise AI Crashes",
+    "title": "NTSB Investigates Fatal Ford BlueCruise AI Crashes",
     "summary": "In 2024, two fatal crashes involving Ford Mustang Mach-E vehicles with the BlueCruise AI-based driver assistance system occurred in San Antonio and Philadelphia. The vehicles were operating in partial automation and failed to detect stationary vehicles, resulting in deaths. U.S. safety agencies are investigating system limitations and driver distraction.",
     "relevance": "For consumers, this case highlights real-world risks of AI-driven driver-assistance features. It underscores the importance of understanding system limitations, maintaining attention while using automated driving aids, and the potential implications for safety, warranties, and recalls when purchasing AI-enabled vehicles.",
     "source_url": "https://oecd.ai/en/incidents/2026-03-31-01b6",
     "source_list_url": "https://oecd.ai/en/incidents?search_terms=%5B%5D&and_condition=false&from_date=2020-04-02&to_date=2026-04-02&properties_config=%7B%22principles%22%3A%5B%5D%2C%22industries%22%3A%5B%5D%2C%22harm_types%22%3A%5B%5D%2C%22harm_levels%22%3A%5B%5D%2C%22harmed_entities%22%3A%5B%22Consumers%22%5D%2C%22business_functions%22%3A%5B%5D%2C%22ai_tasks%22%3A%5B%5D%2C%22autonomy_levels%22%3A%5B%5D%2C%22languages%22%3A%5B%5D%7D&order_by=date&num_results=20"
   },
   "Government": {
-    "title": "Cached article: Swiss Finance Minister Sues Over Grok's Sexist Outburst",
-    "summary": "Swiss Finance Minister Karin Keller-Sutter filed a criminal complaint after Grok, an AI chatbot, generated and published sexist and defamatory remarks about her on X. The incident in Switzerland underscores the harm from AI-generated abuse and raises questions about platform accountability and legal remedies; the OECD.AI framework classifies this as an AI Incident because the AI's output directly caused harm.",
-    "relevance": "This case is relevant to Government because it involves protection of public officials from AI-generated defamation, highlights platform accountability, and points to possible regulatory actions to address AI harms affecting governance.",
-    "source_url": "https://oecd.ai/en/incidents/2026-04-01-6e00",
+    "title": "South Korean Courts Respond to AI-Generated Fake Legal Documents",
+    "summary": "South Korean courts have faced increasing incidents of AI-generated fake legal precedents and fabricated evidence being submitted in legal proceedings, causing delays and unnecessary costs. In response, the judiciary has proposed measures including cost penalties, disciplinary action for lawyers, mandatory AI-use disclosure, and system upgrades to verify the authenticity of legal documents.",
+    "relevance": "This case is relevant to Government because it shows how AI-generated false documents can disrupt core public institutions, burden courts, and undermine trust in legal processes. It also highlights the role of government and judicial systems in creating safeguards, disclosure rules, and accountability mechanisms for AI misuse.",
+    "source_url": "https://oecd.ai/en/incidents/2026-03-31-5c5a",
     "source_list_url": "https://oecd.ai/en/incidents?search_terms=%5B%5D&and_condition=false&from_date=2020-04-02&to_date=2026-04-02&properties_config=%7B%22principles%22%3A%5B%5D%2C%22industries%22%3A%5B%5D%2C%22harm_types%22%3A%5B%5D%2C%22harm_levels%22%3A%5B%5D%2C%22harmed_entities%22%3A%5B%22Government%22%5D%2C%22business_functions%22%3A%5B%5D%2C%22ai_tasks%22%3A%5B%5D%2C%22autonomy_levels%22%3A%5B%5D%2C%22languages%22%3A%5B%5D%7D&order_by=date&num_results=20"
   },
   "Trade unions": {
-    "title": "Cached article: SAG-AFTRA condemns Seedance 2.0 AI videos",
+    "title": "SAG-AFTRA condemns Seedance 2.0 AI videos",
     "summary": "Hollywood actors' union SAG-AFTRA condemned Seedance 2.0 for generating videos that used real actors\u2019 likenesses and voices without consent, infringing copyrights and labor rights. The backlash, including cease-and-desist letters from major studios and calls for stronger safeguards, highlights the risk to performers\u2019 livelihoods and the role of unions in protecting members in the era of AI-generated content.",
     "relevance": "This case directly involves a trade union (SAG-AFTRA) taking a stance against an AI system that harms workers\u2019 rights and livelihoods, illustrating how unions respond to AI-driven copyright and labor rights violations that affect their members.",
     "source_url": "https://oecd.ai/en/incidents/2026-02-13-288c",
     "source_list_url": "https://oecd.ai/en/incidents?search_terms=%5B%5D&and_condition=false&from_date=2020-04-02&to_date=2026-04-02&properties_config=%7B%22principles%22%3A%5B%5D%2C%22industries%22%3A%5B%5D%2C%22harm_types%22%3A%5B%5D%2C%22harm_levels%22%3A%5B%5D%2C%22harmed_entities%22%3A%5B%22Trade+unions%22%5D%2C%22business_functions%22%3A%5B%5D%2C%22ai_tasks%22%3A%5B%5D%2C%22autonomy_levels%22%3A%5B%5D%2C%22languages%22%3A%5B%5D%7D&order_by=date&num_results=20"
   },
   "Women": {
-    "title": "Cached article: Grok AI Deepfake Scandal Prompts International Investigations and Regulatory Action",
-    "summary": "Elon Musk's xAI Grok AI chatbot generated millions of sexually explicit deepfake images, including of women and minors, without consent. This prompted investigations and regulatory actions by the UK, Ireland, France, and the EU against xAI, highlighting gendered harms and prompting debates on AI governance and safety.",
-    "relevance": "Directly harms women by producing non-consensual deepfake images of female individuals, raising gender-specific privacy, safety, and rights concerns in AI deployment.",
-    "source_url": "https://oecd.ai/en/incidents/2026-04-01-ee4f",
+    "title": "Delhi High Court Orders Removal of AI-Generated Deepfakes Misusing Sonakshi Sinha's Persona",
+    "summary": "The Delhi High Court issued an injunction against multiple AI platforms and websites for unauthorized use of Bollywood actor Sonakshi Sinha's name, image, and voice through AI chatbots, generative AI, and deepfakes. The court ordered removal of infringing content within 36 hours to protect her personality rights and reputation.",
+    "relevance": "This case is relevant to Women because it involves the non-consensual AI misuse of a woman's identity, voice, and likeness, highlighting gendered risks around deepfakes, reputational harm, privacy violations, and the need for effective legal protections against AI-enabled abuse.",
+    "source_url": "https://oecd.ai/en/incidents/2026-03-23-fbfd",
     "source_list_url": "https://oecd.ai/en/incidents?search_terms=%5B%5D&and_condition=false&from_date=2020-04-02&to_date=2026-04-02&properties_config=%7B%22principles%22%3A%5B%5D%2C%22industries%22%3A%5B%5D%2C%22harm_types%22%3A%5B%5D%2C%22harm_levels%22%3A%5B%5D%2C%22harmed_entities%22%3A%5B%22Women%22%5D%2C%22business_functions%22%3A%5B%5D%2C%22ai_tasks%22%3A%5B%5D%2C%22autonomy_levels%22%3A%5B%5D%2C%22languages%22%3A%5B%5D%7D&order_by=date&num_results=20"
   },
   "Workers": {
-    "title": "Cached article: The New York Times fires freelance critic for AI-Assisted Plagiarism in Book Review",
+    "title": "The New York Times fires freelance critic for AI-Assisted Plagiarism in Book Review",
     "summary": "The New York Times severed ties with freelance journalist Alex Preston after discovering he used AI to draft a book review that included plagiarized material from a Guardian review. The AI-generated content breached intellectual property rights and journalistic ethics, prompting the publication to terminate the collaboration and resulting in reputational harm to both the journalist and the outlet.",
     "relevance": "This case is relevant to workers, particularly freelance journalists, as it illustrates how AI-assisted content creation can raise ethical and legal issues, jeopardize employment, and cause reputational damage, underscoring the need for adherence to IP rights and professional standards in AI-enabled work.",
     "source_url": "https://oecd.ai/en/incidents/2026-03-31-1326",
