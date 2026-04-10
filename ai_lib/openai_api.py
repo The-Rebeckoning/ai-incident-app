@@ -1,6 +1,7 @@
 import json
 import os
 import re
+from datetime import date
 from pathlib import Path
 from urllib.parse import urlencode, urljoin
 
@@ -10,7 +11,7 @@ from openai import OpenAI
 
 
 DEFAULT_FROM_DATE = "2020-04-02"
-DEFAULT_TO_DATE = "2026-04-02"
+DEFAULT_TO_DATE = date.today().isoformat()
 DEFAULT_MODEL = "gpt-5-nano"
 PRELOADED_CASE_STUDIES_PATH = (
     Path(__file__).resolve().parent.parent / "data" / "preloaded_case_studies.json"
