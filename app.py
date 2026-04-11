@@ -1,6 +1,7 @@
 import os
 import re
 import time
+from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime
 from html import escape
 from pathlib import Path
@@ -11,6 +12,7 @@ import plotly.graph_objects as go
 import streamlit as st
 
 from ai_lib import (
+    country_totals_df,
     incidents_df,
     industries_df,
     industry_long_df,
@@ -28,6 +30,9 @@ st.set_page_config(
 )
 
 CASE_STUDY_MIN_SPINNER_SECONDS = 5.0
+ANOTHER_CASE_INTRO_SPINNER_SECONDS = CASE_STUDY_MIN_SPINNER_SECONDS + 1.0
+CASE_STUDY_EXECUTOR = ThreadPoolExecutor(max_workers=2)
+PRELOADED_CASE_STUDIES_PATH = Path(__file__).resolve().parent / "data" / "preloaded_case_studies.json"
 
 stakeholder_df = stakeholder_time_series_df.copy()
 industry_df = industry_long_df.copy()
@@ -79,8 +84,8 @@ incidents_over_time_df = incidents_df.copy()
 incidents_over_time_df["Date"] = pd.to_datetime(incidents_over_time_df["Date"])
 severity_over_time_df = severity_df.copy()
 severity_over_time_df["Date"] = pd.to_datetime(severity_over_time_df["Date"])
-STAKEHOLDER_COLORS = ["#1f1f1f", "#4a4a4a", "#7b7b7b", "#8e3b46", "#b85c6b"]
-INDUSTRY_SCALE = ["#f2f2f2", "#b5b5b5", "#2a2a2a"]
+STAKEHOLDER_COLORS = ["#222222", "#4f4f4f", "#6f6f6f", "#8e3b46", "#b85c6b"]
+INDUSTRY_SCALE = ["#d8d8d8", "#9a9a9a", "#2a2a2a"]
 STACKED_AREA_COLORS = [
     "#1f1f1f",
     "#4a4a4a",
@@ -89,13 +94,11 @@ STACKED_AREA_COLORS = [
     "#b85c6b",
     "#c78d96",
 ]
-YEAR_FILTER_OPTIONS = {
-    "All years": (2020, 2025),
-    "2020-2022": (2020, 2022),
-    "2023-2025": (2023, 2025),
-}
+EXPLORE_YEAR_MIN = 2020
+EXPLORE_YEAR_MAX = 2025
+EXPLORE_YEAR_DEFAULT = (EXPLORE_YEAR_MIN, EXPLORE_YEAR_MAX)
 STORY_GRADIENT = "linear-gradient(135deg, rgba(248,248,248,0.98), rgba(236,236,236,0.98))"
-CASE_STUDY_CACHE_VERSION = 4
+CASE_STUDY_CACHE_VERSION = 7
 
 
 def inject_page_styles() -> None:
@@ -131,15 +134,23 @@ def style_chart(fig: go.Figure, height: int = 420) -> go.Figure:
     return fig
 
 
-@st.cache_data(show_spinner=False)
+def get_preloaded_case_studies_version() -> int:
+    """Return one cache-busting version tied to the preloaded case JSON on disk."""
+    if not PRELOADED_CASE_STUDIES_PATH.exists():
+        return 0
+    return PRELOADED_CASE_STUDIES_PATH.stat().st_mtime_ns
+
+
 def load_case_study(
     stakeholder: str,
     case_index: int = 0,
     cache_version: int = CASE_STUDY_CACHE_VERSION,
+    preloaded_cases_version: int = 0,
 ) -> dict[str, str]:
     """Load one AI case study summary for the selected stakeholder."""
     api_key = st.secrets.get("OPENAI_API_KEY") or os.environ.get("OPENAI_API_KEY")
     _ = cache_version
+    _ = preloaded_cases_version
     return get_article_component_data(stakeholder, case_index=case_index, api_key=api_key)
 
 
@@ -411,13 +422,10 @@ def build_story_stakeholder_note() -> str:
 def build_selection_summary(
     filtered_stakeholder_df: pd.DataFrame,
     selected_stakeholder: str,
-    selected_year_label: str,
-    include_2026: bool,
+    selected_years: tuple[int, int],
 ) -> tuple[str, str]:
     """Generate one concise narrative based on the active filters."""
-    year_range_label = selected_year_label
-    if selected_year_label == "All years" and include_2026:
-        year_range_label = "All years plus partial 2026"
+    year_range_label = build_year_window_label(selected_years)
 
     if filtered_stakeholder_df.empty:
         return (
@@ -445,13 +453,37 @@ def build_selection_summary(
     )
 
 
-def build_year_window_label(selected_year_label: str, include_2026: bool) -> str:
+def build_year_window_label(selected_years: tuple[int, int]) -> str:
     """Return one short label for the active time window."""
-    if selected_year_label == "All years" and include_2026:
-        return "Jan 2020 - Feb 2026"
-    if selected_year_label == "All years":
-        return "2020-2025"
-    return selected_year_label
+    start_year, end_year = selected_years
+    return f"{start_year}-{end_year}"
+
+
+def get_partial_2026_label() -> str:
+    """Return the latest available 2026 month label for Explore copy."""
+    latest_2026_date = industry_monthly_df.loc[industry_monthly_df["Year"] == 2026, "Date"].max()
+    if pd.isna(latest_2026_date):
+        return "2026"
+    return latest_2026_date.strftime("%B %Y")
+
+
+def get_partial_2026_until_label() -> str:
+    """Return the short label for the available 2026 partial data."""
+    latest_2026_date = industry_monthly_df.loc[industry_monthly_df["Year"] == 2026, "Date"].max()
+    if pd.isna(latest_2026_date):
+        return "2026"
+    return latest_2026_date.strftime("%b %Y")
+
+
+def build_effective_year_window_label(
+    selected_years: tuple[int, int],
+    include_2026: bool,
+) -> str:
+    """Return the active time-window label, including the 2026 partial slice when enabled."""
+    base_label = build_year_window_label(selected_years)
+    if include_2026 and selected_years[1] == EXPLORE_YEAR_MAX:
+        return f"{base_label} + partial 2026 ({get_partial_2026_until_label()})"
+    return base_label
 
 
 def build_fastest_growing_industry_summary(
@@ -684,7 +716,9 @@ def build_stakeholder_story_bridge(
         )
         return (title, copy)
 
-    title = f"AI Cases, 2020 - 2025: {selected_stakeholder}"
+    start_year = int(yearly_totals.iloc[0]["Year"])
+    end_year = int(yearly_totals.iloc[-1]["Year"])
+    title = f"AI Cases, {start_year} - {end_year}: {selected_stakeholder}"
 
     if len(yearly_totals) < 2:
         copy = (
@@ -847,7 +881,7 @@ def build_explore_stakeholder_figure(
 ) -> go.Figure:
     """Build the Explore-tab stakeholder figure."""
     line_title = (
-        f"Specific stakeholder coverage, {year_window_label}"
+        f"Specific stakeholder cases, {year_window_label}"
         if selected_stakeholder == "All stakeholders"
         else f"AI Cases, {year_window_label}: {selected_stakeholder}"
     )
@@ -865,7 +899,11 @@ def build_explore_stakeholder_figure(
     return style_chart(line_fig, height=390)
 
 
-def load_case_study_content(selected_stakeholder: str, case_index: int) -> tuple[str, str, str, str, str, bool]:
+def load_case_study_content(
+    selected_stakeholder: str,
+    case_index: int,
+    min_spinner_seconds: float = CASE_STUDY_MIN_SPINNER_SECONDS,
+) -> tuple[str, str, str, str, str, bool]:
     """Return case-study title, summary, relevance, source URL, source label, and preloaded flag."""
     try:
         if selected_stakeholder == "All stakeholders":
@@ -878,10 +916,15 @@ def load_case_study_content(selected_stakeholder: str, case_index: int) -> tuple
                 False,
             )
         load_started_at = time.perf_counter()
-        case_study_data = load_case_study(selected_stakeholder, case_index=case_index)
+        case_study_data = load_case_study(
+            selected_stakeholder,
+            case_index=case_index,
+            cache_version=CASE_STUDY_CACHE_VERSION,
+            preloaded_cases_version=get_preloaded_case_studies_version(),
+        )
         elapsed = time.perf_counter() - load_started_at
-        if elapsed < CASE_STUDY_MIN_SPINNER_SECONDS:
-            time.sleep(CASE_STUDY_MIN_SPINNER_SECONDS - elapsed)
+        if elapsed < min_spinner_seconds:
+            time.sleep(min_spinner_seconds - elapsed)
         source_label = (
             "View OECD article"
             if case_study_data.get("source_list_url")
@@ -900,6 +943,20 @@ def load_case_study_content(selected_stakeholder: str, case_index: int) -> tuple
         return "", f"Unable to load AI case study: {exc}", "", "", "", False
 
 
+def start_background_case_study_load(selected_stakeholder: str, case_index: int) -> None:
+    """Start one background case-study fetch for the staged another-case flow."""
+    st.session_state["explore_case_future_payload"] = {
+        "stakeholder": selected_stakeholder,
+        "case_index": case_index,
+        "future": CASE_STUDY_EXECUTOR.submit(
+            load_case_study_content,
+            selected_stakeholder,
+            case_index,
+            0,
+        ),
+    }
+
+
 def format_case_study_date(source_url: str) -> str:
     """Extract and format an OECD incident date from the article URL."""
     match = re.search(r"/incidents/(\d{4}-\d{2}-\d{2})-", source_url or "")
@@ -911,23 +968,60 @@ def format_case_study_date(source_url: str) -> str:
         return ""
 
 
-def render_explore_time_filter(
-    selected_year_label: str,
-    include_2026_available: bool,
-) -> None:
-    """Render the Explore-tab time filter."""
-    st.radio(
-        "Time period in the data",
-        options=list(YEAR_FILTER_OPTIONS.keys()),
-        index=list(YEAR_FILTER_OPTIONS.keys()).index(selected_year_label),
-        horizontal=True,
-        key="explore_selected_year_label_top",
-        on_change=sync_explore_year_from_top,
+def render_case_study_loading_state(message: str) -> str:
+    """Return one styled loading block for the case-study panel."""
+    return (
+        '<div class="case-study-loading-shell">'
+        '<div class="case-study-loading-spinner" aria-hidden="true"></div>'
+        f'<div class="case-study-loading-text">{escape(message)}</div>'
+        "</div>"
     )
+
+
+def normalize_explore_years(selected_years: tuple[int, int] | list[int] | None) -> tuple[int, int]:
+    """Keep the Explore year slider within 2020-2025 and at least two calendar years wide."""
+    if not selected_years or len(selected_years) != 2:
+        return EXPLORE_YEAR_DEFAULT
+
+    start_year = max(EXPLORE_YEAR_MIN, min(int(selected_years[0]), EXPLORE_YEAR_MAX))
+    end_year = max(EXPLORE_YEAR_MIN, min(int(selected_years[1]), EXPLORE_YEAR_MAX))
+    if start_year > end_year:
+        start_year, end_year = end_year, start_year
+
+    if end_year - start_year < 1:
+        if end_year < EXPLORE_YEAR_MAX:
+            end_year = start_year + 1
+        else:
+            start_year = end_year - 1
+
+    return (start_year, end_year)
+
+
+def render_explore_time_filter(selected_years: tuple[int, int]) -> None:
+    """Render the Explore-tab time filter."""
+    st.slider(
+        "Time period in the data",
+        min_value=EXPLORE_YEAR_MIN,
+        max_value=EXPLORE_YEAR_MAX,
+        value=selected_years,
+        step=1,
+        key="explore_selected_years",
+        format="%d",
+    )
+    year_markers = "".join(
+        f'<span class="explore-year-marker">{year}</span>'
+        for year in range(EXPLORE_YEAR_MIN, EXPLORE_YEAR_MAX + 1)
+    )
+    st.markdown(
+        f'<div class="explore-year-markers" aria-hidden="true">{year_markers}</div>',
+        unsafe_allow_html=True,
+    )
+    include_2026_available = selected_years[1] == EXPLORE_YEAR_MAX
     st.checkbox(
-        "Include partial 2026 data",
+        f"Partial 2026 data ({get_partial_2026_until_label()})",
         key="explore_include_2026",
         disabled=not include_2026_available,
+        help="This option is available when the selected range ends in 2025.",
     )
 
 
@@ -952,6 +1046,7 @@ def render_explore_stakeholder_row(
     case_requested: bool,
 ) -> None:
     """Render the stakeholder top row plus a supporting detail row."""
+    another_case_loading_phase = st.session_state.get("explore_another_case_loading_phase")
     chart_row_col1, chart_row_col2 = st.columns([0.72, 1.28], gap="large")
     with chart_row_col1:
         st.markdown('<div class="section-card">', unsafe_allow_html=True)
@@ -971,10 +1066,10 @@ def render_explore_stakeholder_row(
             ),
         )
         st.markdown("</div>", unsafe_allow_html=True)
-        filter_select_col, filter_clear_col = st.columns([0.76, 0.24], gap="small")
+        filter_select_col, filter_clear_col = st.columns([0.72, 0.28], gap="small")
         with filter_select_col:
             st.selectbox(
-                "Filter by specific stakeholder",
+                "Choose a stakeholder for a related case",
                 options=stakeholder_options,
                 index=(
                     stakeholder_options.index(selected_stakeholder)
@@ -983,12 +1078,14 @@ def render_explore_stakeholder_row(
                 ),
                 placeholder="",
                 key="explore_selected_stakeholder",
+                on_change=handle_explore_stakeholder_change,
             )
+            st.caption("Pick one stakeholder to load a related reported case.")
         with filter_clear_col:
             st.markdown('<div class="stakeholder-clear-button">', unsafe_allow_html=True)
             st.markdown("<div style='height: 1.9rem;'></div>", unsafe_allow_html=True)
             st.button(
-                "Clear",
+                "Reset",
                 key="clear_stakeholder_filter",
                 help="Clear stakeholder filter",
                 type="secondary",
@@ -1016,34 +1113,83 @@ def render_explore_stakeholder_row(
             else f"Related Case Coverage: {selected_stakeholder}"
         )
         case_study_copy = (
-            "Select a stakeholder to load related coverage from one reported case."
+            "Choose one stakeholder above to load a related reported case."
             if selected_stakeholder == "All stakeholders"
-            else "Load related coverage about how AI affected this stakeholder group."
+            else "A related reported case loads automatically for the selected stakeholder."
         )
         compact_section_intro(
             "Linked Case",
             case_study_title,
             case_study_copy,
         )
-        if not case_requested:
-            button_col, _ = st.columns([0.3, 0.7])
-            with button_col:
-                st.markdown('<div class="linked-case-button-wrap">', unsafe_allow_html=True)
-                if st.button(
-                    "Load related coverage",
-                    key="load_case_study_card",
-                    disabled=(selected_stakeholder == "All stakeholders"),
-                ):
-                    st.session_state["explore_case_requested"] = True
-                    st.session_state["explore_case_index"] = 0
-                    st.rerun()
-                st.markdown("</div>", unsafe_allow_html=True)
         st.markdown("</div>", unsafe_allow_html=True)
     with detail_row_col2:
         st.markdown('<div class="section-card stakeholder-case-study-card">', unsafe_allow_html=True)
         chip_text = "Specific stakeholder" if selected_stakeholder == "All stakeholders" else selected_stakeholder
         if case_requested and selected_stakeholder != "All stakeholders":
-            with st.spinner("Loading AI case study..."):
+            staged_case_payload = st.session_state.get("explore_staged_case_payload")
+            case_future_payload = st.session_state.get("explore_case_future_payload")
+            if another_case_loading_phase == "intro":
+                st.markdown(
+                    render_case_study_loading_state("Loading AI case study..."),
+                    unsafe_allow_html=True,
+                )
+                time.sleep(ANOTHER_CASE_INTRO_SPINNER_SECONDS)
+                st.session_state["explore_another_case_loading_phase"] = "fetch"
+                st.rerun()
+            elif another_case_loading_phase == "fetch":
+                loading_placeholder = st.empty()
+                loading_placeholder.markdown(
+                    render_case_study_loading_state("Loading another reported case..."),
+                    unsafe_allow_html=True,
+                )
+                if (
+                    case_future_payload
+                    and case_future_payload.get("stakeholder") == selected_stakeholder
+                    and case_future_payload.get("case_index") == st.session_state.get("explore_case_index", 0)
+                ):
+                    (
+                        case_study_title_text,
+                        case_study_summary,
+                        case_study_relevance,
+                        source_url,
+                        source_label,
+                        _is_cached_case,
+                    ) = case_future_payload["future"].result()
+                else:
+                    (
+                        case_study_title_text,
+                        case_study_summary,
+                        case_study_relevance,
+                        source_url,
+                        source_label,
+                        _is_cached_case,
+                    ) = load_case_study_content(
+                        selected_stakeholder,
+                        st.session_state.get("explore_case_index", 0),
+                        min_spinner_seconds=0,
+                    )
+                loading_placeholder.empty()
+                st.session_state["explore_another_case_loading_phase"] = None
+                st.session_state["explore_case_future_payload"] = None
+                st.session_state["explore_staged_case_payload"] = {
+                    "stakeholder": selected_stakeholder,
+                    "case_index": st.session_state.get("explore_case_index", 0),
+                    "payload": (
+                        case_study_title_text,
+                        case_study_summary,
+                        case_study_relevance,
+                        source_url,
+                        source_label,
+                        _is_cached_case,
+                    ),
+                }
+                st.rerun()
+            elif (
+                staged_case_payload
+                and staged_case_payload.get("stakeholder") == selected_stakeholder
+                and staged_case_payload.get("case_index") == st.session_state.get("explore_case_index", 0)
+            ):
                 (
                     case_study_title_text,
                     case_study_summary,
@@ -1051,10 +1197,21 @@ def render_explore_stakeholder_row(
                     source_url,
                     source_label,
                     _is_cached_case,
-                ) = load_case_study_content(
-                    selected_stakeholder,
-                    st.session_state.get("explore_case_index", 0),
-                )
+                ) = staged_case_payload["payload"]
+                st.session_state["explore_staged_case_payload"] = None
+            else:
+                with st.spinner("Loading AI case study..."):
+                    (
+                        case_study_title_text,
+                        case_study_summary,
+                        case_study_relevance,
+                        source_url,
+                        source_label,
+                        _is_cached_case,
+                    ) = load_case_study_content(
+                        selected_stakeholder,
+                        st.session_state.get("explore_case_index", 0),
+                    )
         else:
             (
                 case_study_title_text,
@@ -1068,7 +1225,7 @@ def render_explore_stakeholder_row(
                 (
                     f"Load one reported case involving {selected_stakeholder.lower()}."
                     if selected_stakeholder != "All stakeholders"
-                    else "Choose a specific stakeholder above to load one reported case."
+                    else "Choose a stakeholder above to load one reported case."
                 ),
                 "",
                 "",
@@ -1109,7 +1266,7 @@ def render_explore_stakeholder_row(
             with button_col:
                 st.markdown('<div class="linked-case-button-wrap">', unsafe_allow_html=True)
                 st.button(
-                    "Show another case",
+                    "Another case",
                     key=f"another_case_{selected_stakeholder}",
                     on_click=advance_explore_case_index,
                 )
@@ -1147,21 +1304,36 @@ def render_explore_industry_row(
         st.markdown("</div>", unsafe_allow_html=True)
 
 
-def sync_explore_year_from_top() -> None:
-    """Sync the shared Explore year selection from the top control."""
-    st.session_state["explore_selected_year_label"] = st.session_state["explore_selected_year_label_top"]
-
-
 def clear_explore_stakeholder_filter() -> None:
     """Reset the Explore stakeholder filter and related case-study state."""
     st.session_state["explore_selected_stakeholder"] = None
     st.session_state["explore_case_requested"] = False
     st.session_state["explore_case_index"] = 0
+    st.session_state["explore_another_case_loading_phase"] = None
+    st.session_state["explore_staged_case_payload"] = None
+    st.session_state["explore_case_future_payload"] = None
+
+
+def handle_explore_stakeholder_change() -> None:
+    """Load a related case automatically when the stakeholder selection changes."""
+    selected_stakeholder = st.session_state.get("explore_selected_stakeholder")
+    st.session_state["explore_case_index"] = 0
+    st.session_state["explore_case_stakeholder"] = selected_stakeholder
+    st.session_state["explore_case_requested"] = bool(selected_stakeholder)
+    st.session_state["explore_another_case_loading_phase"] = None
+    st.session_state["explore_staged_case_payload"] = None
+    st.session_state["explore_case_future_payload"] = None
 
 
 def advance_explore_case_index() -> None:
     """Advance the related-case index before the next rerun starts."""
     st.session_state["explore_case_index"] = st.session_state.get("explore_case_index", 0) + 1
+    st.session_state["explore_another_case_loading_phase"] = "intro"
+    st.session_state["explore_staged_case_payload"] = None
+    start_background_case_study_load(
+        st.session_state.get("explore_selected_stakeholder"),
+        st.session_state["explore_case_index"],
+    )
 
 
 inject_page_styles()
@@ -1218,36 +1390,29 @@ with story_tab:
             f"Change from {story_metrics['first_year']} to {story_metrics['last_year']} in annual event totals.",
         )
 
-    incidents_trend_fig = go.Figure()
-    incidents_trend_fig.add_trace(
-        go.Scatter(
-            x=incidents_over_time_df["Date"],
-            y=incidents_over_time_df["Total Incidents & Hazards"],
-            mode="lines",
-            name="Incidents and hazards",
-            line=dict(color="#1f1f1f", width=3),
-        )
+    story_country_df = (
+        incidents_over_time_df.assign(Year=incidents_over_time_df["Date"].dt.year)
+        .loc[lambda df: df["Year"].between(2020, 2025)]
+        .groupby("Year", as_index=False)["Total Incidents & Hazards"]
+        .sum()
+        .sort_values("Year")
     )
-    incidents_trend_fig.add_trace(
-        go.Scatter(
-            x=incidents_over_time_df["Date"],
-            y=incidents_over_time_df["6-month moving average"],
-            mode="lines",
-            name="6-month moving average",
-            line=dict(color="#8e3b46", width=2, dash="dash"),
-        )
+    incidents_trend_fig = px.bar(
+        story_country_df,
+        x="Year",
+        y="Total Incidents & Hazards",
+        title="Reported AI cases by year",
+        color="Total Incidents & Hazards",
+        color_continuous_scale=INDUSTRY_SCALE,
     )
-    incidents_trend_fig.update_layout(
-        title="Reported AI cases over time",
-        hovermode="x unified",
-    )
+    incidents_trend_fig.update_layout(coloraxis_showscale=False)
     style_chart(incidents_trend_fig, height=360)
 
     st.markdown('<div class="section-card">', unsafe_allow_html=True)
     section_intro(
-        "Case trends over time",
-        "Number of reported AI cases",
-        "This tracks the total number of incidents and hazards in the source data over time, with a moving average to make longer-term changes easier to see.",
+        "Reported cases by year",
+        "How reported AI cases change over time",
+        "This compares annual totals of reported incidents and hazards in the source data.",
     )
     st.markdown('<div class="chart-shell">', unsafe_allow_html=True)
     st.plotly_chart(incidents_trend_fig, use_container_width=True)
@@ -1313,21 +1478,19 @@ with story_tab:
 
 with explore_tab:
     st.markdown('<div class="explore-scope">', unsafe_allow_html=True)
-    if st.session_state.get("explore_selected_year_label") not in YEAR_FILTER_OPTIONS:
-        st.session_state["explore_selected_year_label"] = list(YEAR_FILTER_OPTIONS.keys())[0]
-
-    selected_year_label = st.session_state["explore_selected_year_label"]
-    include_2026_available = selected_year_label == "All years"
-    if not include_2026_available:
-        st.session_state["explore_include_2026"] = False
+    selected_years = normalize_explore_years(st.session_state.get("explore_selected_years"))
+    st.session_state["explore_selected_years"] = selected_years
     include_2026 = bool(st.session_state.get("explore_include_2026", False))
+    if selected_years[1] != EXPLORE_YEAR_MAX:
+        st.session_state["explore_include_2026"] = False
+        include_2026 = False
 
-    selected_years = YEAR_FILTER_OPTIONS[selected_year_label]
-    if selected_year_label == "All years" and include_2026:
-        selected_years = (selected_years[0], 2026)
+    effective_selected_years = selected_years
+    if include_2026 and selected_years[1] == EXPLORE_YEAR_MAX:
+        effective_selected_years = (selected_years[0], 2026)
 
     explore_data = prepare_explore_data(
-        selected_years=selected_years,
+        selected_years=effective_selected_years,
         selected_stakeholder=st.session_state.get("explore_selected_stakeholder") or "All stakeholders",
     )
     explore_stakeholder_df = explore_data["explore_stakeholder_df"]
@@ -1340,14 +1503,14 @@ with explore_tab:
         st.session_state["explore_case_stakeholder"] = selected_stakeholder
 
     explore_data = prepare_explore_data(
-        selected_years=selected_years,
+        selected_years=effective_selected_years,
         selected_stakeholder=selected_stakeholder,
     )
     filtered_stakeholder_df = explore_data["filtered_stakeholder_df"]
     stakeholder_high_level_df = explore_data["stakeholder_high_level_df"]
     filtered_industry_monthly_df = explore_data["filtered_industry_monthly_df"]
     industry_trend_df = explore_data["industry_trend_df"]
-    year_window_label = build_year_window_label(selected_year_label, include_2026)
+    year_window_label = build_effective_year_window_label(selected_years, include_2026)
     industry_fig = build_explore_industry_figure(industry_trend_df, year_window_label)
     line_fig = build_explore_stakeholder_figure(
         filtered_stakeholder_df,
@@ -1361,7 +1524,7 @@ with explore_tab:
         """,
         unsafe_allow_html=True,
     )
-    render_explore_time_filter(selected_year_label, include_2026_available)
+    render_explore_time_filter(selected_years)
     st.markdown("</div>", unsafe_allow_html=True)
     render_explore_industry_row(
         industry_fig=industry_fig,

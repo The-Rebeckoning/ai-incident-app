@@ -1,30 +1,30 @@
 {
   "Business": {
-    "title": "AI-Powered API Attacks Cause Disruption and Losses Across Asia-Pacific",
-    "summary": "AI-powered bots targeting APIs in Asia-Pacific have caused disruptions to digital services, leading to financial and operational losses. The attacks intensify as AI adoption expands, with security maturity lagging behind, especially in sectors like retail and finance. The case highlights business risk from API security gaps and the need for robust defenses, continuous monitoring, and incident response to protect operations and revenue.",
-    "relevance": "Businesses rely on APIs for core operations and customer experiences; disruptions from API attacks can halt transactions, cause revenue loss, and erode trust. This incident underscores the imperative for companies to invest in API security, threat intelligence, and resilience planning to safeguard business continuity.",
-    "source_url": "https://oecd.ai/en/incidents/2026-04-01-63a8",
+    "title": "Anthropic AI Model Source Code Leak and Restricted Release Due to Security Risks",
+    "summary": "Anthropic accidentally leaked the source code of its Claude Code AI system, exposing proprietary information but not client data. Separately, Anthropic restricted access to its new AI model, Claude Mythos Preview, because of its powerful ability to identify software vulnerabilities and the risk that malicious actors could misuse it for cyberattacks.",
+    "relevance": "This case is relevant to Business because it highlights two forms of AI-related business risk at once: the exposure of proprietary source code and the commercial, legal, and security consequences of releasing highly capable models that could be misused. It shows how AI companies face reputational, intellectual property, and cybersecurity risks that can affect product strategy and trust.",
+    "source_url": "https://oecd.ai/en/incidents/2026-04-07-8e86",
     "source_list_url": "https://oecd.ai/en/incidents?search_terms=%5B%5D&and_condition=false&from_date=2020-04-02&to_date=2026-04-02&properties_config=%7B%22principles%22%3A%5B%5D%2C%22industries%22%3A%5B%5D%2C%22harm_types%22%3A%5B%5D%2C%22harm_levels%22%3A%5B%5D%2C%22harmed_entities%22%3A%5B%22Business%22%5D%2C%22business_functions%22%3A%5B%5D%2C%22ai_tasks%22%3A%5B%5D%2C%22autonomy_levels%22%3A%5B%5D%2C%22languages%22%3A%5B%5D%7D&order_by=date&num_results=20"
   },
   "Children": {
-    "title": "Australia Investigates Social Media Giants Over AI Failures in Age Verification",
-    "summary": "Australia is investigating major social media platforms, including Meta, TikTok, and YouTube, for failing to enforce AI-driven age verification systems, allowing children under 16 to access harmful content despite strict new laws. The case highlights shortcomings in AI-based age assurance, the exposure of minors to unsafe online material, and the legal and governance risks for platforms that fail to protect children.",
-    "relevance": "This case is relevant to Children because the reported failure of AI-driven age verification left minors exposed to harmful content online. It shows how weak or ineffective AI safeguards can directly undermine child safety and why stronger protections and enforcement matter for children\u2019s digital environments.",
-    "source_url": "https://oecd.ai/en/incidents/2026-03-30-04e4",
+    "title": "Meta and YouTube Found Liable for AI-Driven Social Media Harm to Children",
+    "summary": "Juries in California and New Mexico found Meta and YouTube liable for psychological harm to children caused by addictive, AI-driven social media platforms. Meta was fined $375 million, and both companies were ordered to pay $6 million in damages, with recommendation algorithms and engagement features identified as central to the harm.",
+    "relevance": "This case is relevant to Children because it links AI-driven recommendation and engagement systems directly to serious psychological harm affecting young users. It shows how platform design choices can intensify addiction, anxiety, and other mental health harms for children, and why accountability for AI-powered social media systems matters.",
+    "source_url": "https://oecd.ai/en/incidents/2026-03-24-254e",
     "source_list_url": "https://oecd.ai/en/incidents?search_terms=%5B%5D&and_condition=false&from_date=2020-04-02&to_date=2026-04-02&properties_config=%7B%22principles%22%3A%5B%5D%2C%22industries%22%3A%5B%5D%2C%22harm_types%22%3A%5B%5D%2C%22harm_levels%22%3A%5B%5D%2C%22harmed_entities%22%3A%5B%22Children%22%5D%2C%22business_functions%22%3A%5B%5D%2C%22ai_tasks%22%3A%5B%5D%2C%22autonomy_levels%22%3A%5B%5D%2C%22languages%22%3A%5B%5D%7D&order_by=date&num_results=20"
   },
   "Civil society": {
-    "title": "EU Report Reveals China's Use of AI for Disinformation and Harassment",
-    "summary": "The EU's annual report reveals that China uses AI to generate fake videos, deepfakes, comics, and automated content to spread disinformation and harass dissenters, discredit opposition voices, and propagate state propaganda across multiple countries. The AI involvement is direct in content creation and dissemination, and the harms\u2014harassment and violations of rights\u2014are already occurring, qualifying as an AI Incident.",
-    "relevance": "Civil society organizations and activists are directly targeted by AI-driven disinformation and harassment campaigns, threatening freedom of expression, trust in information, and the rights of communities to participate in public discourse.",
-    "source_url": "https://oecd.ai/en/incidents/2026-03-17-fce7",
+    "title": "AI-Enabled Spyware 'Graphite' Used to Illegally Monitor Journalists and Activists in Italy",
+    "summary": "Italian prosecutors confirmed that the AI-enabled spyware 'Graphite,' developed by Israeli firm Paragon, was used to infiltrate the smartphones of journalists and activists, including Francesco Cancellato, Luca Casarini, and Giuseppe Caccia, on December 14, 2024. The unauthorized surveillance violated privacy rights and is under criminal investigation.",
+    "relevance": "This case is relevant to Civil society because it involves AI-enabled surveillance targeting journalists and activists, directly threatening privacy, freedom of expression, and the ability of civic actors to organize and report without intimidation. It highlights how AI tools can be used to undermine democratic participation and fundamental rights.",
+    "source_url": "https://oecd.ai/en/incidents/2026-03-05-333e",
     "source_list_url": "https://oecd.ai/en/incidents?search_terms=%5B%5D&and_condition=false&from_date=2020-04-02&to_date=2026-04-02&properties_config=%7B%22principles%22%3A%5B%5D%2C%22industries%22%3A%5B%5D%2C%22harm_types%22%3A%5B%5D%2C%22harm_levels%22%3A%5B%5D%2C%22harmed_entities%22%3A%5B%22Civil+society%22%5D%2C%22business_functions%22%3A%5B%5D%2C%22ai_tasks%22%3A%5B%5D%2C%22autonomy_levels%22%3A%5B%5D%2C%22languages%22%3A%5B%5D%7D&order_by=date&num_results=20"
   },
   "Consumers": {
-    "title": "NTSB Investigates Fatal Ford BlueCruise AI Crashes",
-    "summary": "In 2024, two fatal crashes involving Ford Mustang Mach-E vehicles with the BlueCruise AI-based driver assistance system occurred in San Antonio and Philadelphia. The vehicles were operating in partial automation and failed to detect stationary vehicles, resulting in deaths. U.S. safety agencies are investigating system limitations and driver distraction.",
-    "relevance": "For consumers, this case highlights real-world risks of AI-driven driver-assistance features. It underscores the importance of understanding system limitations, maintaining attention while using automated driving aids, and the potential implications for safety, warranties, and recalls when purchasing AI-enabled vehicles.",
-    "source_url": "https://oecd.ai/en/incidents/2026-03-31-01b6",
+    "title": "Perplexity AI Accused of Sharing User Conversations with Meta and Google Without Consent",
+    "summary": "A class-action lawsuit in the United States alleges that Perplexity AI secretly shared users' conversational data, including sensitive information, with Meta and Google through embedded tracking technologies, even in incognito mode. The OECD incident page frames this as a realized privacy and data protection harm affecting consumers.",
+    "relevance": "This case is relevant to Consumers because it centers on a consumer-facing AI product allegedly transmitting sensitive user conversations without consent. It highlights the privacy and data governance risks people face when using AI assistants, especially when products collect or share personal information in ways users do not expect or approve.",
+    "source_url": "https://oecd.ai/en/incidents/2026-04-06-3356",
     "source_list_url": "https://oecd.ai/en/incidents?search_terms=%5B%5D&and_condition=false&from_date=2020-04-02&to_date=2026-04-02&properties_config=%7B%22principles%22%3A%5B%5D%2C%22industries%22%3A%5B%5D%2C%22harm_types%22%3A%5B%5D%2C%22harm_levels%22%3A%5B%5D%2C%22harmed_entities%22%3A%5B%22Consumers%22%5D%2C%22business_functions%22%3A%5B%5D%2C%22ai_tasks%22%3A%5B%5D%2C%22autonomy_levels%22%3A%5B%5D%2C%22languages%22%3A%5B%5D%7D&order_by=date&num_results=20"
   },
   "Government": {
@@ -42,17 +42,17 @@
     "source_list_url": "https://oecd.ai/en/incidents?search_terms=%5B%5D&and_condition=false&from_date=2020-04-02&to_date=2026-04-02&properties_config=%7B%22principles%22%3A%5B%5D%2C%22industries%22%3A%5B%5D%2C%22harm_types%22%3A%5B%5D%2C%22harm_levels%22%3A%5B%5D%2C%22harmed_entities%22%3A%5B%22Trade+unions%22%5D%2C%22business_functions%22%3A%5B%5D%2C%22ai_tasks%22%3A%5B%5D%2C%22autonomy_levels%22%3A%5B%5D%2C%22languages%22%3A%5B%5D%7D&order_by=date&num_results=20"
   },
   "Women": {
-    "title": "Delhi High Court Orders Removal of AI-Generated Deepfakes Misusing Sonakshi Sinha's Persona",
-    "summary": "The Delhi High Court issued an injunction against multiple AI platforms and websites for unauthorized use of Bollywood actor Sonakshi Sinha's name, image, and voice through AI chatbots, generative AI, and deepfakes. The court ordered removal of infringing content within 36 hours to protect her personality rights and reputation.",
-    "relevance": "This case is relevant to Women because it involves the non-consensual AI misuse of a woman's identity, voice, and likeness, highlighting gendered risks around deepfakes, reputational harm, privacy violations, and the need for effective legal protections against AI-enabled abuse.",
-    "source_url": "https://oecd.ai/en/incidents/2026-03-23-fbfd",
+    "title": "UK Regulator Bans AI App Ad for Promoting Non-Consensual Nudification",
+    "summary": "The UK Advertising Standards Authority banned a YouTube ad for PixVideo AI Video Maker after it suggested users could digitally remove women's clothing. The regulator found the ad offensive, irresponsible, and harmful because it promoted sexualisation and objectification through AI-powered image manipulation.",
+    "relevance": "This case is relevant to Women because it centers on AI-enabled non-consensual nudification and the objectification of women, highlighting harms tied to privacy, dignity, and gender-based abuse as well as the need for stronger guardrails around how generative image tools are marketed and used.",
+    "source_url": "https://oecd.ai/en/incidents/2026-03-18-bb68",
     "source_list_url": "https://oecd.ai/en/incidents?search_terms=%5B%5D&and_condition=false&from_date=2020-04-02&to_date=2026-04-02&properties_config=%7B%22principles%22%3A%5B%5D%2C%22industries%22%3A%5B%5D%2C%22harm_types%22%3A%5B%5D%2C%22harm_levels%22%3A%5B%5D%2C%22harmed_entities%22%3A%5B%22Women%22%5D%2C%22business_functions%22%3A%5B%5D%2C%22ai_tasks%22%3A%5B%5D%2C%22autonomy_levels%22%3A%5B%5D%2C%22languages%22%3A%5B%5D%7D&order_by=date&num_results=20"
   },
   "Workers": {
-    "title": "The New York Times fires freelance critic for AI-Assisted Plagiarism in Book Review",
-    "summary": "The New York Times severed ties with freelance journalist Alex Preston after discovering he used AI to draft a book review that included plagiarized material from a Guardian review. The AI-generated content breached intellectual property rights and journalistic ethics, prompting the publication to terminate the collaboration and resulting in reputational harm to both the journalist and the outlet.",
-    "relevance": "This case is relevant to workers, particularly freelance journalists, as it illustrates how AI-assisted content creation can raise ethical and legal issues, jeopardize employment, and cause reputational damage, underscoring the need for adherence to IP rights and professional standards in AI-enabled work.",
-    "source_url": "https://oecd.ai/en/incidents/2026-03-31-1326",
-    "source_list_url": "https://oecd.ai/en/incidents?search_terms=%5B%5D&and_condition=false&from_date=2020-04-02&to_date=2026-04-02&properties_config=%7B%22principles%22%3A%5B%5D%2C%22industries%22%3A%5B%5D%2C%22harm_types%22%3A%5B%5D%2C%22harm_levels%22%3A%5B%5D%2C%22harmed_entities%22%3A%5B%22Workers%22%5D%2C%22business_functions%22%3A%5B%5D%2C%22ai_tasks%22%3A%5B%5D%2C%22autonomy_levels%22%3A%5B%5D%2C%22languages%22%3A%5B%5D%7D&order_by=date&num_results=20"
+    "title": "Company Uses AI to Clone Departed Employees, Raising Legal and Ethical Concerns in China",
+    "summary": "Several Chinese companies reportedly built AI versions of former employees by training models on workplace documents and communications. Those digital stand-ins kept performing work after the employees left, prompting backlash and legal warnings about privacy, intellectual property, consent, and labor rights.",
+    "relevance": "This case is relevant to Workers because it focuses on employers using AI to reproduce workers' knowledge and output after they leave, raising questions about consent, ownership of work product, and how AI can be used in ways that weaken labor protections and worker autonomy.",
+    "source_url": "https://oecd.ai/en/incidents/2026-04-03-424a",
+    "source_list_url": "https://oecd.ai/en/incidents?search_terms=%5B%5D&and_condition=false&from_date=2020-04-02&to_date=2026-04-03&properties_config=%7B%22principles%22%3A%5B%5D%2C%22industries%22%3A%5B%5D%2C%22harm_types%22%3A%5B%5D%2C%22harm_levels%22%3A%5B%5D%2C%22harmed_entities%22%3A%5B%22Workers%22%5D%2C%22business_functions%22%3A%5B%5D%2C%22ai_tasks%22%3A%5B%5D%2C%22autonomy_levels%22%3A%5B%5D%2C%22languages%22%3A%5B%5D%7D&order_by=date&num_results=20"
   }
 }
