@@ -1536,7 +1536,7 @@ with story_tab:
         section_intro(
             "Stakeholder patterns",
             "Affected stakeholders",
-            "This shows which groups appear most often in reported AI cases across the current overview window.",
+            "This shows which groups appear most often in reported AI cases across the current overview window. One reported case can appear under more than one stakeholder.",
         )
         insight_card(
             "Missing groups in the source data",
@@ -1558,7 +1558,7 @@ with story_tab:
         section_intro(
             "Industry patterns",
             "Industries with the most reported cases",
-            "This shows where reported AI cases appear most often across industries.",
+            "This shows where reported AI cases appear most often across industries. One reported case can appear under more than one industry.",
         )
         insight_card(
             "Where AI harm is surfacing",
@@ -1724,7 +1724,7 @@ with about_tab:
         section_intro(
             "How to read it",
             "What the counts mean",
-            'A case in this dashboard refers to a reported AI-related issue that has been categorized in the OECD monitor. The counts show how reported cases are sorted in the dataset, rather than a count of unique real-world events. See the <a href="https://oecd.ai/en/incidents-methodology" target="_blank">OECD incidents methodology page</a> for more detail.',
+            'A case in this dashboard refers to a reported AI-related issue that has been categorized in the OECD monitor. The overall incident totals count reported cases over time, while stakeholder and industry views count category assignments. A reported case can be tagged to more than one stakeholder or industry, so those category totals can be higher than the overall incident total. See the <a href="https://oecd.ai/en/incidents-methodology" target="_blank">OECD incidents methodology page</a> for more detail.',
         )
         insight_card(
             "Stakeholder analysis",
