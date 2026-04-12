@@ -21,10 +21,10 @@
     "source_list_url": "https://oecd.ai/en/incidents?search_terms=%5B%5D&and_condition=false&from_date=2020-04-02&to_date=2026-04-02&properties_config=%7B%22principles%22%3A%5B%5D%2C%22industries%22%3A%5B%5D%2C%22harm_types%22%3A%5B%5D%2C%22harm_levels%22%3A%5B%5D%2C%22harmed_entities%22%3A%5B%22Civil+society%22%5D%2C%22business_functions%22%3A%5B%5D%2C%22ai_tasks%22%3A%5B%5D%2C%22autonomy_levels%22%3A%5B%5D%2C%22languages%22%3A%5B%5D%7D&order_by=date&num_results=20"
   },
   "Consumers": {
-    "title": "Perplexity AI Accused of Sharing User Conversations with Meta and Google Without Consent",
-    "summary": "A class-action lawsuit in the United States alleges that Perplexity AI secretly shared users' conversational data, including sensitive information, with Meta and Google through embedded tracking technologies, even in incognito mode. The OECD incident page frames this as a realized privacy and data protection harm affecting consumers.",
-    "relevance": "This case is relevant to Consumers because it centers on a consumer-facing AI product allegedly transmitting sensitive user conversations without consent. It highlights the privacy and data governance risks people face when using AI assistants, especially when products collect or share personal information in ways users do not expect or approve.",
-    "source_url": "https://oecd.ai/en/incidents/2026-04-06-3356",
+    "title": "Study Links Prolonged Use of AI Chatbot Replika to Increased Anxiety and Mental Health Risks",
+    "summary": "A study by Aalto University in Finland found that prolonged use of the AI chatbot Replika, designed for emotional support, can worsen users' anxiety, depression, and social isolation. The OECD incident page frames this as a realized psychological harm affecting consumers who rely on AI companionship tools over time.",
+    "relevance": "This case is relevant to Consumers because it focuses on a consumer-facing AI chatbot used for emotional support and the mental health harms associated with extended use. It highlights how AI products marketed for companionship or wellbeing can create psychological risks for everyday users, especially when people become emotionally dependent on them.",
+    "source_url": "https://oecd.ai/en/incidents/2026-04-07-a0c9",
     "source_list_url": "https://oecd.ai/en/incidents?search_terms=%5B%5D&and_condition=false&from_date=2020-04-02&to_date=2026-04-02&properties_config=%7B%22principles%22%3A%5B%5D%2C%22industries%22%3A%5B%5D%2C%22harm_types%22%3A%5B%5D%2C%22harm_levels%22%3A%5B%5D%2C%22harmed_entities%22%3A%5B%22Consumers%22%5D%2C%22business_functions%22%3A%5B%5D%2C%22ai_tasks%22%3A%5B%5D%2C%22autonomy_levels%22%3A%5B%5D%2C%22languages%22%3A%5B%5D%7D&order_by=date&num_results=20"
   },
   "Government": {

@@ -1213,7 +1213,6 @@ def render_explore_stakeholder_row(
                     source_label,
                     _is_cached_case,
                 ) = staged_case_payload["payload"]
-                st.session_state["explore_staged_case_payload"] = None
             else:
                 with st.spinner("Loading AI case study..."):
                     (
@@ -1227,6 +1226,18 @@ def render_explore_stakeholder_row(
                         selected_stakeholder,
                         st.session_state.get("explore_case_index", 0),
                     )
+                st.session_state["explore_staged_case_payload"] = {
+                    "stakeholder": selected_stakeholder,
+                    "case_index": st.session_state.get("explore_case_index", 0),
+                    "payload": (
+                        case_study_title_text,
+                        case_study_summary,
+                        case_study_relevance,
+                        source_url,
+                        source_label,
+                        _is_cached_case,
+                    ),
+                }
         else:
             (
                 case_study_title_text,
@@ -1432,16 +1443,16 @@ with story_tab:
     incidents_trend_fig = go.Figure()
     incidents_trend_fig.add_trace(
         go.Bar(
-            x=story_country_df["Year"],
+            x=story_country_df["Year"].astype(str),
             y=story_country_df["Total Incidents & Hazards"],
             name="Incidents and hazards",
-            customdata=story_country_df[["YoY Label"]],
+            customdata=story_country_df[["Year", "YoY Label"]],
             marker=dict(color="#8e3b46", line=dict(color="#f3f3f3", width=1.2)),
             width=0.5,
             hovertemplate=(
-                "Year %{x}<br>"
+                "Year %{customdata[0]}<br>"
                 "Incidents and hazards %{y:,}<br>"
-                "%{customdata[0]}<extra></extra>"
+                "%{customdata[1]}<extra></extra>"
             ),
         )
     )
@@ -1449,7 +1460,8 @@ with story_tab:
         title="Reported AI cases by year",
         hovermode="x",
         showlegend=False,
-        bargap=0.4,
+        bargap=0.18,
+        xaxis=dict(domain=[0.08, 0.92]),
     )
     incidents_trend_fig.update_yaxes(rangemode="tozero")
     style_chart(incidents_trend_fig, height=360)
@@ -1458,7 +1470,7 @@ with story_tab:
     section_intro(
         "Reported cases by year",
         "How reported AI cases change over time",
-        "Underlying data: Incidents and Hazards from the AIM incidents dataset.",
+        "",
     )
     st.markdown('<div class="chart-shell">', unsafe_allow_html=True)
     st.plotly_chart(incidents_trend_fig, use_container_width=True)
