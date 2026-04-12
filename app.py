@@ -370,14 +370,25 @@ def build_story_figures() -> tuple[go.Figure, go.Figure]:
     )
     stakeholder_story_df = in_depth_stakeholder_df[
         in_depth_stakeholder_df["Stakeholder"].isin(top_stakeholders)
-    ]
+    ].copy()
 
-    stakeholder_fig = px.line(
-        stakeholder_story_df,
-        x="Year",
-        y="Count",
-        color="Stakeholder",
-        markers=True,
+    stakeholder_fig = go.Figure()
+    for index, stakeholder in enumerate(top_stakeholders):
+        stakeholder_slice = stakeholder_story_df[
+            stakeholder_story_df["Stakeholder"] == stakeholder
+        ].sort_values("Year")
+        stakeholder_fig.add_trace(
+            go.Scatter(
+                x=stakeholder_slice["Year"],
+                y=stakeholder_slice["Count"],
+                mode="lines+markers",
+                name=stakeholder,
+                line=dict(width=3, color=STAKEHOLDER_COLORS[index % len(STAKEHOLDER_COLORS)]),
+                marker=dict(size=9, color=STAKEHOLDER_COLORS[index % len(STAKEHOLDER_COLORS)]),
+            )
+        )
+
+    stakeholder_fig.update_layout(
         title=(
             "Reported cases by stakeholder group"
             "<br><span style='font-size:0.78em; font-style:italic; color:#666666;'>"
@@ -385,10 +396,9 @@ def build_story_figures() -> tuple[go.Figure, go.Figure]:
             "civil society, and trade unions."
             "</span>"
         ),
-        color_discrete_sequence=STAKEHOLDER_COLORS,
+        hovermode="x unified",
+        legend_traceorder="normal",
     )
-    stakeholder_fig.update_traces(line=dict(width=3), marker=dict(size=9))
-    stakeholder_fig.update_layout(hovermode="x unified")
     style_chart(stakeholder_fig, height=430)
     stakeholder_fig.update_layout(margin=dict(l=20, r=20, t=135, b=20))
 
@@ -865,6 +875,7 @@ def build_explore_industry_figure(
         title=f"AI cases by industry, {year_window_label}",
         hovermode="x unified",
         yaxis_tickformat=".0%",
+        legend_traceorder="normal",
         legend=dict(
             orientation="h",
             yanchor="top",
@@ -887,17 +898,53 @@ def build_explore_stakeholder_figure(
         if selected_stakeholder == "All stakeholders"
         else f"AI Cases, {year_window_label}: {selected_stakeholder}"
     )
-    line_fig = px.line(
-        filtered_stakeholder_df,
-        x="Year",
-        y="Count",
-        color="Stakeholder" if selected_stakeholder == "All stakeholders" else None,
-        markers=True,
-        title=line_title,
-        color_discrete_sequence=STAKEHOLDER_COLORS,
-    )
-    line_fig.update_traces(line=dict(width=3), marker=dict(size=8))
-    line_fig.update_layout(hovermode="x unified")
+    if selected_stakeholder == "All stakeholders":
+        top_stakeholders = (
+            filtered_stakeholder_df.groupby("Stakeholder", as_index=False)["Count"].sum()
+            .sort_values("Count", ascending=False)["Stakeholder"]
+            .tolist()
+        )
+        line_fig = go.Figure()
+        for index, stakeholder in enumerate(top_stakeholders):
+            stakeholder_slice = filtered_stakeholder_df[
+                filtered_stakeholder_df["Stakeholder"] == stakeholder
+            ].sort_values("Year")
+            line_fig.add_trace(
+                go.Scatter(
+                    x=stakeholder_slice["Year"],
+                    y=stakeholder_slice["Count"],
+                    mode="lines+markers",
+                    name=stakeholder,
+                    line=dict(
+                        width=3,
+                        color=STAKEHOLDER_COLORS[index % len(STAKEHOLDER_COLORS)],
+                    ),
+                    marker=dict(
+                        size=8,
+                        color=STAKEHOLDER_COLORS[index % len(STAKEHOLDER_COLORS)],
+                    ),
+                )
+            )
+        line_fig.update_layout(
+            title=line_title,
+            hovermode="x unified",
+            legend_traceorder="normal",
+        )
+    else:
+        stakeholder_slice = filtered_stakeholder_df.sort_values("Year")
+        line_fig = go.Figure()
+        line_fig.add_trace(
+            go.Scatter(
+                x=stakeholder_slice["Year"],
+                y=stakeholder_slice["Count"],
+                mode="lines+markers",
+                name=selected_stakeholder,
+                line=dict(width=3, color=STAKEHOLDER_COLORS[0]),
+                marker=dict(size=8, color=STAKEHOLDER_COLORS[0]),
+                showlegend=False,
+            )
+        )
+        line_fig.update_layout(title=line_title, hovermode="x unified")
     return style_chart(line_fig, height=390)
 
 
@@ -1015,7 +1062,7 @@ def render_explore_time_filter(selected_years: tuple[int, int]) -> None:
         unsafe_allow_html=True,
     )
     st.slider(
-        "Time period in the data",
+        "Select years",
         min_value=EXPLORE_YEAR_MIN,
         max_value=EXPLORE_YEAR_MAX,
         value=selected_years,
@@ -1033,12 +1080,11 @@ def render_explore_time_filter(selected_years: tuple[int, int]) -> None:
     )
     include_2026_available = selected_years[1] == EXPLORE_YEAR_MAX
     st.checkbox(
-        f"Partial 2026 data ({get_partial_2026_until_label()})",
+        f"Include partial 2026 data through {get_partial_2026_until_label()}",
         key="explore_include_2026",
         disabled=not include_2026_available,
         help="This option is available when the selected range ends in 2025.",
     )
-
 
 def render_explore_stakeholder_intro() -> None:
     """Render the explainer for the stakeholder graph below the time filter."""
@@ -1084,7 +1130,7 @@ def render_explore_stakeholder_row(
         filter_select_col, filter_clear_col = st.columns([0.72, 0.28], gap="small")
         with filter_select_col:
             st.selectbox(
-                "Choose a stakeholder for a related case",
+                "Select a stakeholder",
                 options=stakeholder_options,
                 index=(
                     stakeholder_options.index(selected_stakeholder)
@@ -1095,12 +1141,12 @@ def render_explore_stakeholder_row(
                 key="explore_selected_stakeholder",
                 on_change=handle_explore_stakeholder_change,
             )
-            st.caption("Pick one stakeholder to load a related reported case.")
+            st.caption("This updates the chart and loads a related case.")
         with filter_clear_col:
             st.markdown('<div class="stakeholder-clear-button">', unsafe_allow_html=True)
             st.markdown("<div style='height: 1.9rem;'></div>", unsafe_allow_html=True)
             st.button(
-                "Reset",
+                "Clear",
                 key="clear_stakeholder_filter",
                 help="Clear stakeholder filter",
                 type="secondary",
@@ -1123,14 +1169,14 @@ def render_explore_stakeholder_row(
     with detail_row_col1:
         st.markdown('<div class="section-card stakeholder-linked-case-card">', unsafe_allow_html=True)
         case_study_title = (
-            "Related Case Coverage"
+            "Example Reported Case"
             if selected_stakeholder == "All stakeholders"
-            else f"Related Case Coverage: {selected_stakeholder}"
+            else f"Example Reported Case: {selected_stakeholder}"
         )
         case_study_copy = (
-            "Choose one stakeholder above to load a related reported case."
+            "Choose one stakeholder above to load an example case."
             if selected_stakeholder == "All stakeholders"
-            else "A related reported case loads automatically for the selected stakeholder."
+            else "An example reported case loads automatically for the selected stakeholder."
         )
         compact_section_intro(
             "Linked Case",
@@ -1249,9 +1295,9 @@ def render_explore_stakeholder_row(
             ) = (
                 "",
                 (
-                    f"Load one reported case involving {selected_stakeholder.lower()}."
+                    f"Load one example case involving {selected_stakeholder.lower()}."
                     if selected_stakeholder != "All stakeholders"
-                    else "Choose a stakeholder above to load one reported case."
+                    else "Choose a stakeholder above to load one example case."
                 ),
                 "",
                 "",
@@ -1292,7 +1338,7 @@ def render_explore_stakeholder_row(
             with button_col:
                 st.markdown('<div class="linked-case-button-wrap">', unsafe_allow_html=True)
                 st.button(
-                    "Another case",
+                    "Load Another",
                     key=f"another_case_{selected_stakeholder}",
                     on_click=advance_explore_case_index,
                 )
@@ -1382,8 +1428,8 @@ with story_tab:
                 which industries are involved, and how incidents appear over time.
             </div>
             <div class="hero-note">
-                This dashboard uses data from the OECD AI Incidents and Hazards Monitor, which compiles
-                reported cases from international news coverage.
+                This dashboard uses data from the OECD AI Incidents and Hazards Monitor.
+                The counts reflect reported and coded cases in the OECD monitor, not a full count of all real-world AI harms.
             </div>
         </div>
         """,
@@ -1547,23 +1593,18 @@ with explore_tab:
     if include_2026 and selected_years[1] == EXPLORE_YEAR_MAX:
         effective_selected_years = (selected_years[0], 2026)
 
+    selected_stakeholder = st.session_state.get("explore_selected_stakeholder") or "All stakeholders"
     explore_data = prepare_explore_data(
         selected_years=effective_selected_years,
-        selected_stakeholder=st.session_state.get("explore_selected_stakeholder") or "All stakeholders",
+        selected_stakeholder=selected_stakeholder,
     )
     explore_stakeholder_df = explore_data["explore_stakeholder_df"]
     stakeholder_options = sorted(explore_stakeholder_df["Stakeholder"].unique())
-    selected_stakeholder = st.session_state.get("explore_selected_stakeholder") or "All stakeholders"
     previous_stakeholder_state = st.session_state.get("explore_case_stakeholder")
     if previous_stakeholder_state != selected_stakeholder:
         st.session_state["explore_case_index"] = 0
         st.session_state["explore_case_requested"] = False
         st.session_state["explore_case_stakeholder"] = selected_stakeholder
-
-    explore_data = prepare_explore_data(
-        selected_years=effective_selected_years,
-        selected_stakeholder=selected_stakeholder,
-    )
     filtered_stakeholder_df = explore_data["filtered_stakeholder_df"]
     stakeholder_high_level_df = explore_data["stakeholder_high_level_df"]
     filtered_industry_monthly_df = explore_data["filtered_industry_monthly_df"]
@@ -1735,12 +1776,6 @@ with downloads_tab:
         "Reported incidents and hazards by industry over time.",
         industries_df,
         "industry_dataset.csv",
-    )
-    render_dataset_preview(
-        "Incidents and Hazards",
-        "Monthly totals for reported incidents and hazards in the source data.",
-        incidents_df,
-        "incidents_and_hazards_dataset.csv",
     )
     render_dataset_preview(
         "Incident vs Hazard Split",

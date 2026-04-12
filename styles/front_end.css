@@ -403,9 +403,9 @@ div[data-testid="stSlider"] {
 }
 div[data-testid="stSlider"] > label {
     color: #3f3f3f !important;
-    font-size: 0.96rem !important;
-    font-weight: 600 !important;
-    margin-bottom: 0.6rem !important;
+    font-size: 1.12rem !important;
+    font-weight: 700 !important;
+    margin-bottom: 0.7rem !important;
 }
 div[data-testid="stSlider"] [data-baseweb="slider"] {
     padding-top: 0.5rem !important;
@@ -443,6 +443,13 @@ div[data-testid="stSlider"] [data-baseweb="slider"] [aria-disabled="true"] {
     opacity: 0.6 !important;
 }
 div[data-testid="stSlider"] p {
+    display: block !important;
+    color: #3f3f3f !important;
+    font-size: 1.12rem !important;
+    font-weight: 700 !important;
+    margin: 0 0 0.7rem !important;
+}
+div[data-testid="stSlider"] [data-baseweb="slider"] p {
     display: none !important;
 }
 .explore-year-markers {
