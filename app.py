@@ -12,7 +12,6 @@ import plotly.graph_objects as go
 import streamlit as st
 
 from ai_lib import (
-    country_totals_df,
     incidents_df,
     industries_df,
     industry_long_df,
@@ -395,6 +394,8 @@ def build_story_figures() -> tuple[go.Figure, go.Figure]:
 
     industry_story_df = (
         story_industry_df.groupby("Industry", as_index=False)["Count"].sum()
+        .sort_values("Count", ascending=False)
+        .head(5)
         .sort_values("Count", ascending=True)
     )
     industry_fig = px.bar(
@@ -406,7 +407,8 @@ def build_story_figures() -> tuple[go.Figure, go.Figure]:
         color="Count",
         color_continuous_scale=INDUSTRY_SCALE,
     )
-    industry_fig.update_layout(coloraxis_showscale=False)
+    industry_fig.update_traces(width=0.6)
+    industry_fig.update_layout(coloraxis_showscale=False, bargap=0.12)
     style_chart(industry_fig, height=460)
 
     return stakeholder_fig, industry_fig
@@ -999,6 +1001,19 @@ def normalize_explore_years(selected_years: tuple[int, int] | list[int] | None) 
 
 def render_explore_time_filter(selected_years: tuple[int, int]) -> None:
     """Render the Explore-tab time filter."""
+    range_start_pct = ((selected_years[0] - EXPLORE_YEAR_MIN) / (EXPLORE_YEAR_MAX - EXPLORE_YEAR_MIN)) * 100
+    range_end_pct = ((selected_years[1] - EXPLORE_YEAR_MIN) / (EXPLORE_YEAR_MAX - EXPLORE_YEAR_MIN)) * 100
+    st.markdown(
+        (
+            "<style>"
+            ":root {"
+            f"--explore-range-start: {range_start_pct:.2f}%;"
+            f"--explore-range-end: {range_end_pct:.2f}%;"
+            "}"
+            "</style>"
+        ),
+        unsafe_allow_html=True,
+    )
     st.slider(
         "Time period in the data",
         min_value=EXPLORE_YEAR_MIN,
@@ -1397,22 +1412,53 @@ with story_tab:
         .sum()
         .sort_values("Year")
     )
-    incidents_trend_fig = px.bar(
-        story_country_df,
-        x="Year",
-        y="Total Incidents & Hazards",
-        title="Reported AI cases by year",
-        color="Total Incidents & Hazards",
-        color_continuous_scale=INDUSTRY_SCALE,
+    story_country_df["YoY Absolute Change"] = (
+        story_country_df["Total Incidents & Hazards"].diff()
     )
-    incidents_trend_fig.update_layout(coloraxis_showscale=False)
+    story_country_df["YoY Percent Change"] = (
+        story_country_df["Total Incidents & Hazards"].pct_change() * 100
+    )
+    story_country_df["YoY Label"] = story_country_df.apply(
+        lambda row: (
+            "YoY change not available"
+            if pd.isna(row["YoY Absolute Change"]) or pd.isna(row["YoY Percent Change"])
+            else (
+                f"YoY change {int(row['YoY Absolute Change']):+,}"
+                f" ({row['YoY Percent Change']:+.1f}%)"
+            )
+        ),
+        axis=1,
+    )
+    incidents_trend_fig = go.Figure()
+    incidents_trend_fig.add_trace(
+        go.Bar(
+            x=story_country_df["Year"],
+            y=story_country_df["Total Incidents & Hazards"],
+            name="Incidents and hazards",
+            customdata=story_country_df[["YoY Label"]],
+            marker=dict(color="#8e3b46", line=dict(color="#f3f3f3", width=1.2)),
+            width=0.5,
+            hovertemplate=(
+                "Year %{x}<br>"
+                "Incidents and hazards %{y:,}<br>"
+                "%{customdata[0]}<extra></extra>"
+            ),
+        )
+    )
+    incidents_trend_fig.update_layout(
+        title="Reported AI cases by year",
+        hovermode="x",
+        showlegend=False,
+        bargap=0.4,
+    )
+    incidents_trend_fig.update_yaxes(rangemode="tozero")
     style_chart(incidents_trend_fig, height=360)
 
     st.markdown('<div class="section-card">', unsafe_allow_html=True)
     section_intro(
         "Reported cases by year",
         "How reported AI cases change over time",
-        "This compares annual totals of reported incidents and hazards in the source data.",
+        "Underlying data: Incidents and Hazards from the AIM incidents dataset.",
     )
     st.markdown('<div class="chart-shell">', unsafe_allow_html=True)
     st.plotly_chart(incidents_trend_fig, use_container_width=True)

@@ -103,7 +103,6 @@ industries_df = _prepare_trimmed_columns_dataframe(_read_csv("aim-industries.csv
 severity_df = _prepare_trimmed_columns_dataframe(_read_csv("aim-severity.csv"))
 incidents_df = _prepare_date_dataframe(_read_csv("aim-incidents.csv"))
 stakeholders_df = _prepare_date_dataframe(_read_csv("aim_affected_stakeholders.csv"))
-countries_df = _prepare_date_dataframe(_read_csv("aim-countries.csv"))
 
 
 def to_long_format(
@@ -240,13 +239,6 @@ industry_long_df = group_by_year(
 industry_totals_df = get_category_totals(
     _prepare_industries_dataframe(industries_df),
     "Industry",
-    "Total Count",
-    exclude_columns=["Date", "Year"],
-)
-
-country_totals_df = get_category_totals(
-    countries_df,
-    "Country",
     "Total Count",
     exclude_columns=["Date", "Year"],
 )

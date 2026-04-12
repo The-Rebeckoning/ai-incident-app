@@ -418,11 +418,19 @@ div[data-testid="stSlider"] [data-baseweb="slider"] > div > div > div {
     border-radius: 999px !important;
 }
 div[data-testid="stSlider"] [data-baseweb="slider"] > div > div {
-    background: rgba(184, 92, 107, 0.18) !important;
+    background: linear-gradient(
+        to right,
+        rgba(184, 92, 107, 0.18) 0%,
+        rgba(184, 92, 107, 0.18) var(--explore-range-start, 0%),
+        rgba(142, 59, 70, 0.62) var(--explore-range-start, 0%),
+        rgba(142, 59, 70, 0.62) var(--explore-range-end, 100%),
+        rgba(184, 92, 107, 0.18) var(--explore-range-end, 100%),
+        rgba(184, 92, 107, 0.18) 100%
+    ) !important;
 }
 div[data-testid="stSlider"] [data-baseweb="slider"] > div > div > div,
 div[data-testid="stSlider"] [data-baseweb="slider"] div[style*="background"] {
-    background: rgba(184, 92, 107, 0.34) !important;
+    background: transparent !important;
 }
 div[data-testid="stSlider"] [role="slider"] {
     width: 1.4rem !important;
