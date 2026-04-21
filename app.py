@@ -162,11 +162,18 @@ def dataframe_to_csv(df: pd.DataFrame) -> bytes:
     return export_df.to_csv(index=False).encode("utf-8")
 
 
+@st.cache_data(show_spinner=False)
+def load_source_csv_bytes(filename: str) -> bytes:
+    """Return the original source CSV bytes for full-export downloads."""
+    return (Path(__file__).resolve().parent / "data" / filename).read_bytes()
+
+
 def render_dataset_preview(
     title: str,
     copy: str,
     df: pd.DataFrame,
     download_name: str,
+    download_data: bytes | None = None,
     preview_rows: int = 10,
 ) -> None:
     """Render one short dataset preview plus a CSV download."""
@@ -179,7 +186,7 @@ def render_dataset_preview(
     st.dataframe(preview_df, use_container_width=True, hide_index=True)
     st.download_button(
         label=f"Download {title} CSV",
-        data=dataframe_to_csv(df),
+        data=download_data if download_data is not None else dataframe_to_csv(df),
         file_name=download_name,
         mime="text/csv",
         use_container_width=True,
@@ -1702,7 +1709,7 @@ with about_tab:
         title="Incident and hazard split over time",
         hovermode="x unified",
     )
-    severity_fig.update_yaxes(showticklabels=False)
+    severity_fig.update_yaxes(showticklabels=True)
     style_chart(severity_fig, height=320)
 
     with about_row1_col2:
@@ -1770,16 +1777,19 @@ with downloads_tab:
         "Reported AI cases by affected stakeholder over time.",
         stakeholders_df,
         "stakeholders_dataset.csv",
+        download_data=load_source_csv_bytes("aim_affected_stakeholders.csv"),
     )
     render_dataset_preview(
         "Industry",
         "Reported incidents and hazards by industry over time.",
         industries_df,
         "industry_dataset.csv",
+        download_data=load_source_csv_bytes("aim-industries.csv"),
     )
     render_dataset_preview(
         "Incident vs Hazard Split",
         "Monthly counts comparing incidents and hazards over time.",
         severity_df,
         "incident_vs_hazard_split_dataset.csv",
+        download_data=load_source_csv_bytes("aim-severity.csv"),
     )
