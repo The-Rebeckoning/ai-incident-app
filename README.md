@@ -2,7 +2,9 @@
 
 Interactive Streamlit dashboard for exploring reported AI incidents and hazards from the OECD AI Incidents and Hazards Monitor, with stakeholder trends, industry patterns, downloadable source data, and AI-generated case study summaries.
 
-Live app: https://ai-incidents-dashboard.streamlit.app
+[Live dashboard](https://ai-incidents-dashboard.streamlit.app)
+
+
 
 ## Overview
 
@@ -29,7 +31,13 @@ The app is organized into four sections:
 
 ## How It Works
 
-The app combines cleaned OECD AIM datasets, interactive Streamlit views, and OpenAI-powered case study summaries to make the source material easier to explore.
+The app models OECD AIM source CSVs into analysis-ready views for charts and summaries:
+
+- `dataframes.py` loads, cleans, standardizes, and reshapes the source tables
+- `analytics.py` builds derived summaries and filtered analytical views
+- `app.py` handles presentation, interaction, and visualization
+
+The data starts as monthly source tables for total reported cases, incident-versus-hazard splits, stakeholder counts, and industry counts. Those tables are cleaned, date-parsed, and reshaped into yearly and monthly analytical views that drive the dashboard.
 
 ![Application architecture and workflow](app_diagram.png)
 
@@ -74,6 +82,7 @@ Preloaded case-study data is stored locally in `data/preloaded_case_studies.json
 .
 ├── app.py
 ├── ai_lib/
+│   ├── analytics.py
 │   ├── dataframes.py
 │   ├── openai_api.py
 │   └── __init__.py
@@ -87,6 +96,12 @@ Preloaded case-study data is stored locally in `data/preloaded_case_studies.json
 │   └── front_end.css
 └── requirements.txt
 ```
+
+The code is organized in three layers:
+
+- `ai_lib/dataframes.py`: source-data loading, cleaning, label normalization, and reshaping
+- `ai_lib/analytics.py`: derived summaries, filtered views, and analytical helper logic
+- `app.py`: Streamlit layout, interaction flow, and Plotly chart rendering
 
 ## Running Locally
 

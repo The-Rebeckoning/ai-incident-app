@@ -18,6 +18,24 @@ INDUSTRY_COLUMNS = [
     "Arts, entertainment, and recreation",
 ]
 
+INDUSTRY_SOURCE_LABELS = {
+    "Government & security & defence": "Government, security, and defence",
+    "Government / security / defence": "Government, security, and defence",
+    "Media & social platforms & marketing": "Media, social platforms, and marketing",
+    "Media / social platforms / marketing": "Media, social platforms, and marketing",
+    "Robots & sensors & IT hardware": "Robots, sensors, and IT hardware",
+    "Robots / sensors / IT hardware": "Robots, sensors, and IT hardware",
+    "Healthcare & drugs & biotechnology": "Healthcare, drugs, and biotechnology",
+    "Healthcare / drugs / biotechnology": "Healthcare, drugs, and biotechnology",
+    "Arts & entertainment &": "Arts, entertainment, and recreation",
+    "Arts & entertainment & recreation": "Arts, entertainment, and recreation",
+    "Arts / entertainment / recreation": "Arts, entertainment, and recreation",
+}
+
+INDUSTRY_DISPLAY_LABELS = {
+    "Government, security, and defence": "Government, security, and defense",
+}
+
 STAKEHOLDER_COLUMNS = [
     "General public",
     "Consumers",
@@ -69,21 +87,7 @@ def _prepare_trimmed_columns_dataframe(df: pd.DataFrame) -> pd.DataFrame:
 def _prepare_industries_dataframe(df: pd.DataFrame) -> pd.DataFrame:
     """Return a cleaned industries dataframe with parsed dates and fixed labels."""
     prepared_df = _prepare_trimmed_columns_dataframe(df)
-    prepared_df = prepared_df.rename(
-        columns={
-            "Government & security & defence": "Government, security, and defence",
-            "Government / security / defence": "Government, security, and defence",
-            "Media & social platforms & marketing": "Media, social platforms, and marketing",
-            "Media / social platforms / marketing": "Media, social platforms, and marketing",
-            "Robots & sensors & IT hardware": "Robots, sensors, and IT hardware",
-            "Robots / sensors / IT hardware": "Robots, sensors, and IT hardware",
-            "Healthcare & drugs & biotechnology": "Healthcare, drugs, and biotechnology",
-            "Healthcare / drugs / biotechnology": "Healthcare, drugs, and biotechnology",
-            "Arts & entertainment &": "Arts, entertainment, and recreation",
-            "Arts & entertainment & recreation": "Arts, entertainment, and recreation",
-            "Arts / entertainment / recreation": "Arts, entertainment, and recreation",
-        }
-    )
+    prepared_df = prepared_df.rename(columns=INDUSTRY_SOURCE_LABELS)
     prepared_df["Date"] = pd.to_datetime(
         prepared_df["Date"],
         format="%Y-%m",
@@ -95,14 +99,15 @@ def _prepare_industries_dataframe(df: pd.DataFrame) -> pd.DataFrame:
 
 
 
-# Raw CSV-backed dataframes
-affected_stakeholders_df = _prepare_date_dataframe(
+# CSV-backed base tables
+stakeholder_counts_monthly_df = _prepare_date_dataframe(
     _read_csv("aim_affected_stakeholders.csv")
 )
-industries_df = _prepare_industries_dataframe(_read_csv("aim-industries.csv"))
-severity_df = _prepare_trimmed_columns_dataframe(_read_csv("aim-severity.csv"))
-incidents_df = _prepare_date_dataframe(_read_csv("aim-incidents.csv"))
-stakeholders_df = _prepare_date_dataframe(_read_csv("aim_affected_stakeholders.csv"))
+industry_counts_monthly_df = _prepare_industries_dataframe(_read_csv("aim-industries.csv"))
+severity_split_monthly_df = _prepare_date_dataframe(
+    _prepare_trimmed_columns_dataframe(_read_csv("aim-severity.csv"))
+)
+reported_case_totals_monthly_df = _prepare_date_dataframe(_read_csv("aim-incidents.csv"))
 
 
 def to_long_format(
@@ -210,24 +215,43 @@ def get_category_totals(
     return totals_df
 
 
-affected_stakeholders_long_df = to_long_format(
-    affected_stakeholders_df,
+def rename_industry_labels_for_display(df: pd.DataFrame) -> pd.DataFrame:
+    """Return a copy with industry labels normalized for display text."""
+    return df.rename(columns=INDUSTRY_DISPLAY_LABELS).replace({"Industry": INDUSTRY_DISPLAY_LABELS})
+
+
+def build_monthly_category_counts(
+    df: pd.DataFrame,
+    category_columns: list[str],
+    category_name: str,
+) -> pd.DataFrame:
+    """Return a long-form monthly category-count table."""
+    return to_long_format(
+        df,
+        category_columns,
+        var_name=category_name,
+        value_name="Count",
+    )
+
+
+stakeholder_counts_long_df = to_long_format(
+    stakeholder_counts_monthly_df,
     STAKEHOLDER_COLUMNS,
     var_name="Stakeholder",
     value_name="Count",
 )
 
-stakeholder_time_series_df = group_by_year(
-    affected_stakeholders_long_df,
+stakeholder_counts_yearly_df = group_by_year(
+    stakeholder_counts_long_df,
     "Count",
     ["Stakeholder"],
 )
 
-stakeholders_long_df = group_by_year(affected_stakeholders_long_df, "Count")
+stakeholder_counts_yearly_totals_df = group_by_year(stakeholder_counts_long_df, "Count")
 
-industry_long_df = group_by_year(
+industry_counts_yearly_df = group_by_year(
     to_long_format(
-        industries_df,
+        industry_counts_monthly_df,
         INDUSTRY_COLUMNS,
         var_name="Industry",
         value_name="Count",
@@ -236,9 +260,17 @@ industry_long_df = group_by_year(
     ["Industry"],
 )
 
-industry_totals_df = get_category_totals(
-    industries_df,
+industry_count_totals_df = get_category_totals(
+    industry_counts_monthly_df,
     "Industry",
     "Total Count",
     exclude_columns=["Date", "Year"],
+)
+
+industry_counts_yearly_display_df = rename_industry_labels_for_display(industry_counts_yearly_df)
+industry_counts_monthly_display_df = rename_industry_labels_for_display(industry_counts_monthly_df)
+industry_counts_monthly_long_df = build_monthly_category_counts(
+    industry_counts_monthly_display_df,
+    [INDUSTRY_DISPLAY_LABELS.get(column, column) for column in INDUSTRY_COLUMNS],
+    "Industry",
 )
