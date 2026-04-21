@@ -2,7 +2,7 @@
 
 Interactive Streamlit dashboard for exploring reported AI incidents and hazards from the OECD AI Incidents and Hazards Monitor, with stakeholder trends, industry patterns, downloadable source data, and AI-generated case study summaries.
 
-[Live dashboard](https://ai-incidents-dashboard.streamlit.app)
+[https://ai-incidents-dashboard.streamlit.app](https://ai-incidents-dashboard.streamlit.app)
 
 
 
@@ -16,19 +16,6 @@ This project turns OECD AIM source data into a browsable dashboard focused on re
 - how incidents compare with hazards in the source material
 - one contextual case study tied to a selected stakeholder
 
-The dashboard is meant to help users:
-
-- identify patterns in reported AI harm across industries and stakeholder groups
-- connect aggregated data to real-world cases so AI harm feels more concrete in practice
-- move beyond high-level trends to examine example cases, including harms that may not yet be fully captured at scale
-
-The app is organized into four sections:
-
-- `Overview`: high-level metrics and summary visualizations
-- `Explore`: interactive filtering by year range and stakeholder, plus related case study retrieval
-- `About the Data`: source notes, methodology context, and limitations
-- `Downloads`: preview and export of the datasets used in the dashboard
-
 ## How It Works
 
 The app models OECD AIM source CSVs into analysis-ready views for charts and summaries:
@@ -36,8 +23,6 @@ The app models OECD AIM source CSVs into analysis-ready views for charts and sum
 - `dataframes.py` loads, cleans, standardizes, and reshapes the source tables
 - `analytics.py` builds derived summaries and filtered analytical views
 - `app.py` handles presentation, interaction, and visualization
-
-The data starts as monthly source tables for total reported cases, incident-versus-hazard splits, stakeholder counts, and industry counts. Those tables are cleaned, date-parsed, and reshaped into yearly and monthly analytical views that drive the dashboard.
 
 ![Application architecture and workflow](app_diagram.png)
 
