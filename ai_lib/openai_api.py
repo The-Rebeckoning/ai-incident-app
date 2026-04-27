@@ -16,6 +16,16 @@ DEFAULT_MODEL = "gpt-5-nano"
 PRELOADED_CASE_STUDIES_PATH = (
     Path(__file__).resolve().parent.parent / "data" / "preloaded_case_studies.json"
 )
+CASE_STUDY_STAKEHOLDERS = (
+    "Consumers",
+    "Workers",
+    "Government",
+    "Business",
+    "Children",
+    "Civil society",
+    "Women",
+    "Trade unions",
+)
 
 
 def get_openai_client(api_key: str | None = None) -> OpenAI:
@@ -105,6 +115,7 @@ def extract_article_text(html: str, max_chars: int = 12000) -> str:
 
 def build_article_prompt(selected_value: str, article_text: str) -> str:
     """Build the summarization prompt for the selected stakeholder."""
+    stakeholder_list = ", ".join(CASE_STUDY_STAKEHOLDERS)
     return f"""
 The user selected this stakeholder: {selected_value}.
 
@@ -114,11 +125,13 @@ Use this exact schema:
 {{
   "title": "Article Title - OECD.AI",
   "summary": "A plain-prose summary of the case.",
-  "relevance": "A short plain-prose explanation of why this case is relevant to {selected_value}."
+  "relevance": "A short plain-prose explanation of why this case is relevant to {selected_value}.",
+  "also_affects": "One additional affected stakeholder from this list if it is clearly supported by the article, otherwise an empty string: {stakeholder_list}"
 }}
 
 Return valid JSON only. No markdown fences.
 If the source title is unclear, write a concise title based on the case.
+Do not repeat {selected_value} in also_affects.
 
 OECD content:
 {article_text}
@@ -135,6 +148,7 @@ def parse_article_response(response_text: str, fallback_title: str = "AI Harm Ca
     title = str(parsed.get("title", "")).strip()
     summary = str(parsed.get("summary", "")).strip()
     relevance = str(parsed.get("relevance", "")).strip()
+    also_affects = str(parsed.get("also_affects", "")).strip()
 
     if not any([title, summary, relevance]):
         blocks = [block.strip() for block in response_text.split("\n\n") if block.strip()]
@@ -168,12 +182,27 @@ def parse_article_response(response_text: str, fallback_title: str = "AI Harm Ca
     title = clean_title(title)
     summary = clean_body(summary)
     relevance = clean_body(relevance)
+    also_affects = re.sub(r"\s{2,}", " ", also_affects).strip(" -:")
     title = title or fallback_title
     return {
         "title": title,
         "summary": summary,
         "relevance": relevance,
+        "also_affects": also_affects,
     }
+
+
+def normalize_additional_stakeholder(selected_value: str, candidate: str) -> str:
+    """Keep only valid case-study stakeholder labels for the secondary chip."""
+    normalized_candidate = re.sub(r"\s+", " ", (candidate or "")).strip()
+    if not normalized_candidate:
+        return ""
+
+    lookup = {stakeholder.lower(): stakeholder for stakeholder in CASE_STUDY_STAKEHOLDERS}
+    resolved = lookup.get(normalized_candidate.lower(), "")
+    if not resolved or resolved == selected_value:
+        return ""
+    return resolved
 
 
 def fetch_article_text_for_stakeholder(
@@ -292,6 +321,10 @@ def get_live_article_component_data(
         "title": article_content["title"],
         "summary": article_content["summary"],
         "relevance": article_content["relevance"],
+        "also_affects": normalize_additional_stakeholder(
+            selected_value,
+            article_content.get("also_affects", ""),
+        ),
         "is_preloaded": False,
     }
 
@@ -312,6 +345,10 @@ def get_article_component_data(
             return {
                 **preloaded_case,
                 "selected_value": selected_value,
+                "also_affects": normalize_additional_stakeholder(
+                    selected_value,
+                    preloaded_case.get("also_affects", ""),
+                ),
                 "is_preloaded": True,
             }
 

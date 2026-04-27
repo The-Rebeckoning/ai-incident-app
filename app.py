@@ -472,13 +472,14 @@ def load_case_study_content(
     selected_stakeholder: str,
     case_index: int,
     min_spinner_seconds: float = CASE_STUDY_MIN_SPINNER_SECONDS,
-) -> tuple[str, str, str, str, str, bool]:
-    """Return case-study title, summary, relevance, source URL, source label, and preloaded flag."""
+) -> tuple[str, str, str, str, str, str, bool]:
+    """Return case-study title, summary, relevance, extra stakeholder, source URL, source label, and preloaded flag."""
     try:
         if selected_stakeholder == "All stakeholders":
             return (
                 "",
                 "Choose one stakeholder to load a matching case summary from the OECD incident feed.",
+                "",
                 "",
                 "",
                 "",
@@ -504,12 +505,13 @@ def load_case_study_content(
             case_study_data.get("title", ""),
             case_study_data.get("summary", ""),
             case_study_data.get("relevance", ""),
+            case_study_data.get("also_affects", ""),
             case_study_data["source_url"],
             source_label,
             bool(case_study_data.get("is_preloaded")),
         )
     except Exception as exc:
-        return "", f"Unable to load AI case study: {exc}", "", "", "", False
+        return "", f"Unable to load AI case study: {exc}", "", "", "", "", False
 
 
 def start_background_case_study_load(selected_stakeholder: str, case_index: int) -> None:
@@ -713,19 +715,21 @@ def render_explore_stakeholder_row(
                         case_study_title_text,
                         case_study_summary,
                         case_study_relevance,
+                        case_study_additional_stakeholder,
                         source_url,
                         source_label,
                         _is_cached_case,
                     ) = case_future_payload["future"].result()
                 else:
-                    (
-                        case_study_title_text,
-                        case_study_summary,
-                        case_study_relevance,
-                        source_url,
-                        source_label,
-                        _is_cached_case,
-                    ) = load_case_study_content(
+                        (
+                            case_study_title_text,
+                            case_study_summary,
+                            case_study_relevance,
+                            case_study_additional_stakeholder,
+                            source_url,
+                            source_label,
+                            _is_cached_case,
+                        ) = load_case_study_content(
                         selected_stakeholder,
                         st.session_state.get("explore_case_index", 0),
                         min_spinner_seconds=0,
@@ -740,6 +744,7 @@ def render_explore_stakeholder_row(
                         case_study_title_text,
                         case_study_summary,
                         case_study_relevance,
+                        case_study_additional_stakeholder,
                         source_url,
                         source_label,
                         _is_cached_case,
@@ -755,6 +760,7 @@ def render_explore_stakeholder_row(
                     case_study_title_text,
                     case_study_summary,
                     case_study_relevance,
+                    case_study_additional_stakeholder,
                     source_url,
                     source_label,
                     _is_cached_case,
@@ -765,6 +771,7 @@ def render_explore_stakeholder_row(
                         case_study_title_text,
                         case_study_summary,
                         case_study_relevance,
+                        case_study_additional_stakeholder,
                         source_url,
                         source_label,
                         _is_cached_case,
@@ -779,6 +786,7 @@ def render_explore_stakeholder_row(
                         case_study_title_text,
                         case_study_summary,
                         case_study_relevance,
+                        case_study_additional_stakeholder,
                         source_url,
                         source_label,
                         _is_cached_case,
@@ -789,6 +797,7 @@ def render_explore_stakeholder_row(
                 case_study_title_text,
                 case_study_summary,
                 case_study_relevance,
+                case_study_additional_stakeholder,
                 source_url,
                 source_label,
                 _is_cached_case,
@@ -799,6 +808,7 @@ def render_explore_stakeholder_row(
                     if selected_stakeholder != "All stakeholders"
                     else "Choose a stakeholder above to load one example case."
                 ),
+                "",
                 "",
                 "",
                 "",
@@ -815,9 +825,20 @@ def render_explore_stakeholder_row(
             if case_study_date_text
             else ""
         )
+        chip_html = (
+            '<div class="case-study-chip-row">'
+            f'<div class="case-study-chip">{escape(chip_text)}</div>'
+        )
+        if case_study_additional_stakeholder:
+            chip_html += (
+                '<div class="case-study-chip case-study-chip-secondary">'
+                f'Also affects {escape(case_study_additional_stakeholder)}'
+                "</div>"
+            )
+        chip_html += "</div>"
         case_html = (
             '<div class="case-study-shell">'
-            f'<div class="case-study-chip">{chip_text}</div>'
+            f"{chip_html}"
             f"{headline_html}"
             f"{date_html}"
             f'<div class="case-study-body">{escape(case_study_summary)}</div>'
