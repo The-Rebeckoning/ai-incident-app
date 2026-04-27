@@ -465,6 +465,16 @@ def build_explore_stakeholder_figure(
             )
         )
         line_fig.update_layout(title=line_title, hovermode="x unified")
+
+    stakeholder_years = sorted(filtered_stakeholder_df["Year"].dropna().unique())
+    line_fig.update_xaxes(
+        tickmode="array",
+        tickvals=stakeholder_years,
+        ticktext=[
+            "Partial 2026" if int(year) == 2026 else str(int(year))
+            for year in stakeholder_years
+        ],
+    )
     return style_chart(line_fig, height=390)
 
 
@@ -935,7 +945,7 @@ story_stakeholder_fig, story_industry_fig = build_story_figures()
 story_stakeholder_note = build_story_stakeholder_note()
 
 story_tab, explore_tab, about_tab, downloads_tab = st.tabs(
-    ["Overview", "Explore", "About the Data", "Downloads"]
+    ["Overview", "Explore the Data", "Data & Methodology", "Downloads"]
 )
 
 with story_tab:
@@ -1062,8 +1072,8 @@ with story_tab:
             "This shows which groups appear most often in reported AI cases across the current overview window. One reported case can appear under more than one stakeholder.",
         )
         insight_card(
-            "Missing groups in the source data",
-            "The source dataset does not separate people of color or people with disabilities into their own stakeholder categories, though these groups are referenced in many of the underlying articles.",
+            "Missing Groups in the Source Data",
+            "Certain groups are not captured as stakeholder categories and may be underrepresented or absent in the data.",
         )
         insight_card(
             "Stakeholder categories can overlap",
@@ -1172,7 +1182,7 @@ with about_tab:
         + STORY_GRADIENT
         + """; margin-bottom: 1rem;">
             <div class="section-kicker">Method and Source Notes</div>
-            <div class="section-title">About the Data</div>
+            <div class="section-title">Data & Methodology</div>
             <div class="section-copy">
                 A summary of the dashboard's source data, methods, and key limitations.
             </div>
@@ -1267,7 +1277,7 @@ with about_tab:
             "Some industries, countries, harms, or stakeholder groups may appear more often because they receive more media attention or clearer public documentation."
         )
         insight_card(
-            "What the counts mean",
+            "How to interpret larger counts",
             "A larger count means an issue appears more often in reported and coded cases in this dataset, not necessarily that it occurs more often in the world."
         )
         st.markdown("</div>", unsafe_allow_html=True)
