@@ -1269,7 +1269,7 @@ with about_tab:
         st.markdown('<div class="section-card">', unsafe_allow_html=True)
         section_intro(
             "Limitations",
-            "What this dashboard does not show",
+            "What this dashboard shows",
             "This dashboard shows reported and coded cases in the OECD monitor, not every real-world AI harm event. What appears most often here is shaped by what gets covered, surfaced, and categorized in the source material.",
         )
         insight_card(
