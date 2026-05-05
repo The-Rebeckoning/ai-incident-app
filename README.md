@@ -72,10 +72,10 @@ Preloaded case-study data is stored locally in `data/preloaded_case_studies.json
 │   ├── openai_api.py
 │   └── __init__.py
 ├── data/
-│   ├── aim_affected_stakeholders.csv
-│   ├── aim-industries.csv
-│   ├── aim-incidents.csv
-│   ├── aim-severity.csv
+│   ├── aim-affected_stakeholders-04-2026.csv
+│   ├── aim-industries-04-2026.csv
+│   ├── aim-incidents-04-2026.csv
+│   ├── aim-severity-04-2026.csv
 │   └── preloaded_case_studies.json
 ├── styles/
 │   └── front_end.css

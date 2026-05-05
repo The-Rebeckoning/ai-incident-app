@@ -101,13 +101,13 @@ def _prepare_industries_dataframe(df: pd.DataFrame) -> pd.DataFrame:
 
 # CSV-backed base tables
 stakeholder_counts_monthly_df = _prepare_date_dataframe(
-    _read_csv("aim_affected_stakeholders.csv")
+    _read_csv("aim-affected_stakeholders-04-2026.csv")
 )
-industry_counts_monthly_df = _prepare_industries_dataframe(_read_csv("aim-industries.csv"))
+industry_counts_monthly_df = _prepare_industries_dataframe(_read_csv("aim-industries-04-2026.csv"))
 severity_split_monthly_df = _prepare_date_dataframe(
-    _prepare_trimmed_columns_dataframe(_read_csv("aim-severity.csv"))
+    _prepare_trimmed_columns_dataframe(_read_csv("aim-severity-04-2026.csv"))
 )
-reported_case_totals_monthly_df = _prepare_date_dataframe(_read_csv("aim-incidents.csv"))
+reported_case_totals_monthly_df = _prepare_date_dataframe(_read_csv("aim-incidents-04-2026.csv"))
 
 
 def to_long_format(

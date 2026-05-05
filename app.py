@@ -1301,28 +1301,28 @@ with downloads_tab:
     render_dataset_preview(
         "Stakeholders",
         "Reported AI cases by affected stakeholder over time.",
-        load_source_csv_preview("aim_affected_stakeholders.csv"),
+        load_source_csv_preview("aim-affected_stakeholders-04-2026.csv"),
         "stakeholders_dataset.csv",
-        download_data=load_source_csv_bytes("aim_affected_stakeholders.csv"),
+        download_data=load_source_csv_bytes("aim-affected_stakeholders-04-2026.csv"),
     )
     render_dataset_preview(
         "Industry",
         "Reported incidents and hazards by industry over time.",
-        load_source_csv_preview("aim-industries.csv"),
+        load_source_csv_preview("aim-industries-04-2026.csv"),
         "industry_dataset.csv",
-        download_data=load_source_csv_bytes("aim-industries.csv"),
+        download_data=load_source_csv_bytes("aim-industries-04-2026.csv"),
     )
     render_dataset_preview(
         "Monthly Totals",
         "Monthly totals for reported incidents and hazards in the source data.",
-        load_source_csv_preview("aim-incidents.csv"),
+        load_source_csv_preview("aim-incidents-04-2026.csv"),
         "monthly_totals_dataset.csv",
-        download_data=load_source_csv_bytes("aim-incidents.csv"),
+        download_data=load_source_csv_bytes("aim-incidents-04-2026.csv"),
     )
     render_dataset_preview(
         "Incident vs Hazard Split",
         "Monthly counts comparing incidents and hazards over time.",
-        load_source_csv_preview("aim-severity.csv"),
+        load_source_csv_preview("aim-severity-04-2026.csv"),
         "incident_vs_hazard_split_dataset.csv",
-        download_data=load_source_csv_bytes("aim-severity.csv"),
+        download_data=load_source_csv_bytes("aim-severity-04-2026.csv"),
     )
