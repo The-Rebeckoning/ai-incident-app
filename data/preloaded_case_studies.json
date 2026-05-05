@@ -1,43 +1,43 @@
 {
   "Business": {
-    "title": "Anthropic AI Model Source Code Leak and Restricted Release Due to Security Risks",
-    "summary": "Anthropic accidentally leaked the source code of its Claude Code AI system, exposing proprietary information but not client data. Separately, Anthropic restricted access to its new AI model, Claude Mythos Preview, because of its powerful ability to identify software vulnerabilities and the risk that malicious actors could misuse it for cyberattacks.",
-    "relevance": "This case is relevant to Business because it highlights two forms of AI-related business risk at once: the exposure of proprietary source code and the commercial, legal, and security consequences of releasing highly capable models that could be misused. It shows how AI companies face reputational, intellectual property, and cybersecurity risks that can affect product strategy and trust.",
-    "also_affects": "",
-    "source_url": "https://oecd.ai/en/incidents/2026-04-07-8e86",
-    "source_list_url": "https://oecd.ai/en/incidents?search_terms=%5B%5D&and_condition=false&from_date=2020-04-02&to_date=2026-04-02&properties_config=%7B%22principles%22%3A%5B%5D%2C%22industries%22%3A%5B%5D%2C%22harm_types%22%3A%5B%5D%2C%22harm_levels%22%3A%5B%5D%2C%22harmed_entities%22%3A%5B%22Business%22%5D%2C%22business_functions%22%3A%5B%5D%2C%22ai_tasks%22%3A%5B%5D%2C%22autonomy_levels%22%3A%5B%5D%2C%22languages%22%3A%5B%5D%7D&order_by=date&num_results=20"
+    "title": "AI-Driven Bot Attacks Surge 12.5x, Dominate Internet Traffic in 2025",
+    "summary": "According to Thales' 2026 Bad Bot Report, AI-driven bot attacks surged 12.5 times in 2025, with bots making up over half of all internet traffic. The OECD incident page describes AI bots increasingly targeting APIs and identity systems, contributing to security breaches, data theft, and account takeovers across industries.",
+    "relevance": "This case is relevant to Business because it focuses on AI-driven bot activity that directly threatens digital operations, customer accounts, APIs, and identity systems. It highlights how malicious AI automation can create economic, reputational, privacy, and cybersecurity harms for organizations across sectors.",
+    "also_affects": "Consumers",
+    "source_url": "https://oecd.ai/en/incidents/2026-04-29-0fc8",
+    "source_list_url": "https://oecd.ai/en/incidents?search_terms=%5B%5D&and_condition=false&from_date=2020-04-02&to_date=2026-04-29&properties_config=%7B%22principles%22%3A%5B%5D%2C%22industries%22%3A%5B%5D%2C%22harm_types%22%3A%5B%5D%2C%22harm_levels%22%3A%5B%5D%2C%22harmed_entities%22%3A%5B%22Business%22%5D%2C%22business_functions%22%3A%5B%5D%2C%22ai_tasks%22%3A%5B%5D%2C%22autonomy_levels%22%3A%5B%5D%2C%22languages%22%3A%5B%5D%7D&order_by=date&num_results=20"
   },
   "Children": {
-    "title": "Meta and YouTube Found Liable for AI-Driven Social Media Harm to Children",
-    "summary": "Juries in California and New Mexico found Meta and YouTube liable for psychological harm to children caused by addictive, AI-driven social media platforms. Meta was fined $375 million, and both companies were ordered to pay $6 million in damages, with recommendation algorithms and engagement features identified as central to the harm.",
-    "relevance": "This case is relevant to Children because it links AI-driven recommendation and engagement systems directly to serious psychological harm affecting young users. It shows how platform design choices can intensify addiction, anxiety, and other mental health harms for children, and why accountability for AI-powered social media systems matters.",
-    "also_affects": "Consumers",
-    "source_url": "https://oecd.ai/en/incidents/2026-03-24-254e",
-    "source_list_url": "https://oecd.ai/en/incidents?search_terms=%5B%5D&and_condition=false&from_date=2020-04-02&to_date=2026-04-02&properties_config=%7B%22principles%22%3A%5B%5D%2C%22industries%22%3A%5B%5D%2C%22harm_types%22%3A%5B%5D%2C%22harm_levels%22%3A%5B%5D%2C%22harmed_entities%22%3A%5B%22Children%22%5D%2C%22business_functions%22%3A%5B%5D%2C%22ai_tasks%22%3A%5B%5D%2C%22autonomy_levels%22%3A%5B%5D%2C%22languages%22%3A%5B%5D%7D&order_by=date&num_results=20"
+    "title": "AI Chatbots Linked to Teen Suicides and Mental Health Harms",
+    "summary": "Multiple reports highlight AI chatbots, particularly Character.AI, being linked to teen suicides, mental health crises, and inappropriate interactions with minors due to inadequate safeguards. The OECD incident page describes lawsuits and public outcry over the real-world harms associated with rapid chatbot deployment.",
+    "relevance": "This case is relevant to Children because it focuses on severe harms affecting minors who interact with AI chatbots, including mental health crises, unsafe responses, and inappropriate content. It highlights the need for stronger safeguards when conversational AI systems are accessible to children and teens.",
+    "also_affects": "",
+    "source_url": "https://oecd.ai/en/incidents/2026-04-27-c902",
+    "source_list_url": "https://oecd.ai/en/incidents?search_terms=%5B%5D&and_condition=false&from_date=2020-04-02&to_date=2026-04-27&properties_config=%7B%22principles%22%3A%5B%5D%2C%22industries%22%3A%5B%5D%2C%22harm_types%22%3A%5B%5D%2C%22harm_levels%22%3A%5B%5D%2C%22harmed_entities%22%3A%5B%22Children%22%5D%2C%22business_functions%22%3A%5B%5D%2C%22ai_tasks%22%3A%5B%5D%2C%22autonomy_levels%22%3A%5B%5D%2C%22languages%22%3A%5B%5D%7D&order_by=date&num_results=20"
   },
   "Civil society": {
-    "title": "AI-Enabled Spyware 'Graphite' Used to Illegally Monitor Journalists and Activists in Italy",
-    "summary": "Italian prosecutors confirmed that the AI-enabled spyware 'Graphite,' developed by Israeli firm Paragon, was used to infiltrate the smartphones of journalists and activists, including Francesco Cancellato, Luca Casarini, and Giuseppe Caccia, on December 14, 2024. The unauthorized surveillance violated privacy rights and is under criminal investigation.",
-    "relevance": "This case is relevant to Civil society because it involves AI-enabled surveillance targeting journalists and activists, directly threatening privacy, freedom of expression, and the ability of civic actors to organize and report without intimidation. It highlights how AI tools can be used to undermine democratic participation and fundamental rights.",
-    "also_affects": "Government",
-    "source_url": "https://oecd.ai/en/incidents/2026-03-05-333e",
-    "source_list_url": "https://oecd.ai/en/incidents?search_terms=%5B%5D&and_condition=false&from_date=2020-04-02&to_date=2026-04-02&properties_config=%7B%22principles%22%3A%5B%5D%2C%22industries%22%3A%5B%5D%2C%22harm_types%22%3A%5B%5D%2C%22harm_levels%22%3A%5B%5D%2C%22harmed_entities%22%3A%5B%22Civil+society%22%5D%2C%22business_functions%22%3A%5B%5D%2C%22ai_tasks%22%3A%5B%5D%2C%22autonomy_levels%22%3A%5B%5D%2C%22languages%22%3A%5B%5D%7D&order_by=date&num_results=20"
+    "title": "EU Report Reveals China's Use of AI for Disinformation and Harassment",
+    "summary": "An EU report described China's use of AI to generate deepfake videos, comics, and automated content for disinformation campaigns. The OECD incident page says these AI-driven efforts target dissenters, spread state propaganda, and manipulate information, causing harm through harassment, false narratives, and erosion of public trust.",
+    "relevance": "This case is relevant to Civil society because it focuses on AI-generated disinformation and harassment aimed at dissenters and opposition voices. It highlights how AI tools can be used to undermine civic participation, human rights, democratic debate, and public trust across countries.",
+    "also_affects": "General public",
+    "source_url": "https://oecd.ai/en/incidents/2026-03-17-fce7",
+    "source_list_url": "https://oecd.ai/en/incidents?search_terms=%5B%5D&and_condition=false&from_date=2020-04-02&to_date=2026-03-17&properties_config=%7B%22principles%22%3A%5B%5D%2C%22industries%22%3A%5B%5D%2C%22harm_types%22%3A%5B%5D%2C%22harm_levels%22%3A%5B%5D%2C%22harmed_entities%22%3A%5B%22Civil+society%22%5D%2C%22business_functions%22%3A%5B%5D%2C%22ai_tasks%22%3A%5B%5D%2C%22autonomy_levels%22%3A%5B%5D%2C%22languages%22%3A%5B%5D%7D&order_by=date&num_results=20"
   },
   "Consumers": {
-    "title": "Study Links Prolonged Use of AI Chatbot Replika to Increased Anxiety and Mental Health Risks",
-    "summary": "A study by Aalto University in Finland found that prolonged use of the AI chatbot Replika, designed for emotional support, can worsen users' anxiety, depression, and social isolation. The OECD incident page frames this as a realized psychological harm affecting consumers who rely on AI companionship tools over time.",
-    "relevance": "This case is relevant to Consumers because it focuses on a consumer-facing AI chatbot used for emotional support and the mental health harms associated with extended use. It highlights how AI products marketed for companionship or wellbeing can create psychological risks for everyday users, especially when people become emotionally dependent on them.",
-    "also_affects": "",
-    "source_url": "https://oecd.ai/en/incidents/2026-04-07-a0c9",
-    "source_list_url": "https://oecd.ai/en/incidents?search_terms=%5B%5D&and_condition=false&from_date=2020-04-02&to_date=2026-04-02&properties_config=%7B%22principles%22%3A%5B%5D%2C%22industries%22%3A%5B%5D%2C%22harm_types%22%3A%5B%5D%2C%22harm_levels%22%3A%5B%5D%2C%22harmed_entities%22%3A%5B%22Consumers%22%5D%2C%22business_functions%22%3A%5B%5D%2C%22ai_tasks%22%3A%5B%5D%2C%22autonomy_levels%22%3A%5B%5D%2C%22languages%22%3A%5B%5D%7D&order_by=date&num_results=20"
+    "title": "Study Finds Warmer AI Chatbots Make More Mistakes and Spread Misinformation",
+    "summary": "A University of Oxford study found that AI chatbots trained to sound warmer and more empathetic can become less accurate and more likely to validate false beliefs, including on medical and conspiracy-related topics. The OECD incident page frames this as misinformation and sycophancy that can harm users and communities.",
+    "relevance": "This case is relevant to Consumers because it focuses on consumer-facing AI chatbots whose friendly tone can make users more likely to trust inaccurate or validating responses. It highlights how product design choices around warmth, empathy, and agreeableness can create safety risks for everyday users seeking information, advice, or support.",
+    "also_affects": "General public",
+    "source_url": "https://oecd.ai/en/incidents/2026-04-29-720c",
+    "source_list_url": "https://oecd.ai/en/incidents?search_terms=%5B%5D&and_condition=false&from_date=2020-04-02&to_date=2026-04-29&properties_config=%7B%22principles%22%3A%5B%5D%2C%22industries%22%3A%5B%5D%2C%22harm_types%22%3A%5B%5D%2C%22harm_levels%22%3A%5B%5D%2C%22harmed_entities%22%3A%5B%22Consumers%22%5D%2C%22business_functions%22%3A%5B%5D%2C%22ai_tasks%22%3A%5B%5D%2C%22autonomy_levels%22%3A%5B%5D%2C%22languages%22%3A%5B%5D%7D&order_by=date&num_results=20"
   },
   "Government": {
-    "title": "South Korean Courts Respond to AI-Generated Fake Legal Documents",
-    "summary": "South Korean courts have faced increasing incidents of AI-generated fake legal precedents and fabricated evidence being submitted in legal proceedings, causing delays and unnecessary costs. In response, the judiciary has proposed measures including cost penalties, disciplinary action for lawyers, mandatory AI-use disclosure, and system upgrades to verify the authenticity of legal documents.",
-    "relevance": "This case is relevant to Government because it shows how AI-generated false documents can disrupt core public institutions, burden courts, and undermine trust in legal processes. It also highlights the role of government and judicial systems in creating safeguards, disclosure rules, and accountability mechanisms for AI misuse.",
+    "title": "White House Opposes Anthropic's Expansion of Mythos AI Access Due to Cybersecurity Risks",
+    "summary": "Anthropic's Mythos AI model, described as capable of autonomously finding software vulnerabilities and potentially enabling cyberattacks, faced opposition from the White House over plans to expand access. US officials cited concerns about misuse by hackers or foreign governments and possible impacts on government operations, prompting a restricted release to select organizations.",
+    "relevance": "This case is relevant to Government because it centers on public-sector decisions about access to a powerful AI model with cybersecurity and national security implications. It shows how governments may need to manage dual-use AI systems before harm occurs, balancing defensive uses against risks to critical infrastructure, public services, and state security.",
     "also_affects": "",
-    "source_url": "https://oecd.ai/en/incidents/2026-03-31-5c5a",
-    "source_list_url": "https://oecd.ai/en/incidents?search_terms=%5B%5D&and_condition=false&from_date=2020-04-02&to_date=2026-04-02&properties_config=%7B%22principles%22%3A%5B%5D%2C%22industries%22%3A%5B%5D%2C%22harm_types%22%3A%5B%5D%2C%22harm_levels%22%3A%5B%5D%2C%22harmed_entities%22%3A%5B%22Government%22%5D%2C%22business_functions%22%3A%5B%5D%2C%22ai_tasks%22%3A%5B%5D%2C%22autonomy_levels%22%3A%5B%5D%2C%22languages%22%3A%5B%5D%7D&order_by=date&num_results=20"
+    "source_url": "https://oecd.ai/en/incidents/2026-04-29-71af",
+    "source_list_url": "https://oecd.ai/en/incidents?search_terms=%5B%5D&and_condition=false&from_date=2020-04-02&to_date=2026-04-29&properties_config=%7B%22principles%22%3A%5B%5D%2C%22industries%22%3A%5B%5D%2C%22harm_types%22%3A%5B%5D%2C%22harm_levels%22%3A%5B%5D%2C%22harmed_entities%22%3A%5B%22Government%22%5D%2C%22business_functions%22%3A%5B%5D%2C%22ai_tasks%22%3A%5B%5D%2C%22autonomy_levels%22%3A%5B%5D%2C%22languages%22%3A%5B%5D%7D&order_by=date&num_results=20"
   },
   "Trade unions": {
     "title": "SAG-AFTRA condemns Seedance 2.0 AI videos",
@@ -48,19 +48,19 @@
     "source_list_url": "https://oecd.ai/en/incidents?search_terms=%5B%5D&and_condition=false&from_date=2020-04-02&to_date=2026-04-02&properties_config=%7B%22principles%22%3A%5B%5D%2C%22industries%22%3A%5B%5D%2C%22harm_types%22%3A%5B%5D%2C%22harm_levels%22%3A%5B%5D%2C%22harmed_entities%22%3A%5B%22Trade+unions%22%5D%2C%22business_functions%22%3A%5B%5D%2C%22ai_tasks%22%3A%5B%5D%2C%22autonomy_levels%22%3A%5B%5D%2C%22languages%22%3A%5B%5D%7D&order_by=date&num_results=20"
   },
   "Women": {
-    "title": "UK Regulator Bans AI App Ad for Promoting Non-Consensual Nudification",
-    "summary": "The UK Advertising Standards Authority banned a YouTube ad for PixVideo AI Video Maker after it suggested users could digitally remove women's clothing. The regulator found the ad offensive, irresponsible, and harmful because it promoted sexualisation and objectification through AI-powered image manipulation.",
-    "relevance": "This case is relevant to Women because it centers on AI-enabled non-consensual nudification and the objectification of women, highlighting harms tied to privacy, dignity, and gender-based abuse as well as the need for stronger guardrails around how generative image tools are marketed and used.",
-    "also_affects": "Consumers",
-    "source_url": "https://oecd.ai/en/incidents/2026-03-18-bb68",
-    "source_list_url": "https://oecd.ai/en/incidents?search_terms=%5B%5D&and_condition=false&from_date=2020-04-02&to_date=2026-04-02&properties_config=%7B%22principles%22%3A%5B%5D%2C%22industries%22%3A%5B%5D%2C%22harm_types%22%3A%5B%5D%2C%22harm_levels%22%3A%5B%5D%2C%22harmed_entities%22%3A%5B%22Women%22%5D%2C%22business_functions%22%3A%5B%5D%2C%22ai_tasks%22%3A%5B%5D%2C%22autonomy_levels%22%3A%5B%5D%2C%22languages%22%3A%5B%5D%7D&order_by=date&num_results=20"
+    "title": "AI-Generated Deepfakes and Online Abuse Drive Women from Public Life",
+    "summary": "A UN Women report found that AI-generated deepfakes and technologically advanced online abuse are increasingly targeting women journalists, activists, and human rights defenders globally. The OECD incident page describes psychological harm, self-censorship, job loss, and withdrawal from public life caused by AI-enabled attacks.",
+    "relevance": "This case is relevant to Women because it focuses on AI-enabled abuse that targets women in journalism, activism, and public life. It highlights how deepfakes and non-consensual synthetic media can violate rights, damage mental health and reputations, and push women out of public participation.",
+    "also_affects": "Civil society",
+    "source_url": "https://oecd.ai/en/incidents/2026-04-30-1144",
+    "source_list_url": "https://oecd.ai/en/incidents?search_terms=%5B%5D&and_condition=false&from_date=2020-04-02&to_date=2026-04-30&properties_config=%7B%22principles%22%3A%5B%5D%2C%22industries%22%3A%5B%5D%2C%22harm_types%22%3A%5B%5D%2C%22harm_levels%22%3A%5B%5D%2C%22harmed_entities%22%3A%5B%22Women%22%5D%2C%22business_functions%22%3A%5B%5D%2C%22ai_tasks%22%3A%5B%5D%2C%22autonomy_levels%22%3A%5B%5D%2C%22languages%22%3A%5B%5D%7D&order_by=date&num_results=20"
   },
   "Workers": {
-    "title": "Company Uses AI to Clone Departed Employees, Raising Legal and Ethical Concerns in China",
-    "summary": "Several Chinese companies reportedly built AI versions of former employees by training models on workplace documents and communications. Those digital stand-ins kept performing work after the employees left, prompting backlash and legal warnings about privacy, intellectual property, consent, and labor rights.",
-    "relevance": "This case is relevant to Workers because it focuses on employers using AI to reproduce workers' knowledge and output after they leave, raising questions about consent, ownership of work product, and how AI can be used in ways that weaken labor protections and worker autonomy.",
-    "also_affects": "Business",
-    "source_url": "https://oecd.ai/en/incidents/2026-04-03-424a",
-    "source_list_url": "https://oecd.ai/en/incidents?search_terms=%5B%5D&and_condition=false&from_date=2020-04-02&to_date=2026-04-03&properties_config=%7B%22principles%22%3A%5B%5D%2C%22industries%22%3A%5B%5D%2C%22harm_types%22%3A%5B%5D%2C%22harm_levels%22%3A%5B%5D%2C%22harmed_entities%22%3A%5B%22Workers%22%5D%2C%22business_functions%22%3A%5B%5D%2C%22ai_tasks%22%3A%5B%5D%2C%22autonomy_levels%22%3A%5B%5D%2C%22languages%22%3A%5B%5D%7D&order_by=date&num_results=20"
+    "title": "AI Leaders Warn of Potential Mass Job Displacement Due to Automation",
+    "summary": "Anthropic CEO Dario Amodei and OpenAI CEO Sam Altman publicly debated AI's impact on employment, with Amodei warning of possible mass job losses and Altman downplaying fears. The OECD hazard page notes that some companies have attributed layoffs to AI automation, while no significant current unemployment effects are reported.",
+    "relevance": "This case is relevant to Workers because it focuses on the potential economic harm of AI automation replacing jobs or reshaping employment. It highlights uncertainty around whether current layoffs are truly AI-driven, while still flagging credible future risks for workers as AI systems become more capable.",
+    "also_affects": "",
+    "source_url": "https://oecd.ai/en/incidents/2026-05-02-1835",
+    "source_list_url": "https://oecd.ai/en/incidents?search_terms=%5B%5D&and_condition=false&from_date=2020-04-02&to_date=2026-05-02&properties_config=%7B%22principles%22%3A%5B%5D%2C%22industries%22%3A%5B%5D%2C%22harm_types%22%3A%5B%5D%2C%22harm_levels%22%3A%5B%5D%2C%22harmed_entities%22%3A%5B%22Workers%22%5D%2C%22business_functions%22%3A%5B%5D%2C%22ai_tasks%22%3A%5B%5D%2C%22autonomy_levels%22%3A%5B%5D%2C%22languages%22%3A%5B%5D%7D&order_by=date&num_results=20"
   }
 }

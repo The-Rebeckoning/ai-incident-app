@@ -213,8 +213,13 @@ def build_fastest_growing_industry_summary(
             )
             if ytd_row["Industry"] != growth_row["Industry"]:
                 summary += (
-                    f" This is a different industry than the full-period leader, "
-                    f"{growth_row['Industry']}."
+                    f" {growth_row['Industry']} is no longer the fastest-growing industry "
+                    f"in the January-{month_label} 2026 year-to-date comparison."
+                )
+            else:
+                summary += (
+                    f" {growth_row['Industry']} remains the fastest-growing industry "
+                    f"in the January-{month_label} 2026 year-to-date comparison."
                 )
 
     return summary
